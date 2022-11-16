@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Home from "./pages/Home.svelte";
 	import AuthPage from "./auth/page.svelte";
+	import NotFound from "./pages/pageNotFound.svelte";
 	import Router, { link, location, push } from "svelte-spa-router";
 	import { Islogged } from "./store/store";
 	import MyStore from "./store";
@@ -10,6 +11,7 @@
 	const routes = {
 		"/": Home,
 		"/auth": AuthPage,
+		'*': NotFound,
 	};
 
 	if(!$Islogged){
