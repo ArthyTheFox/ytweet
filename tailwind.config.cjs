@@ -1,8 +1,10 @@
 const colors = require('tailwindcss/colors')
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+  content: ['./index.html', './src/**/*.{svelte,js,ts}'],
   theme: {
+    extend: {},
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
@@ -20,5 +22,5 @@ module.exports = {
       'extra': '#23b2a4'
     },
   },
-  plugins: []
-};
+  plugins: [],
+}

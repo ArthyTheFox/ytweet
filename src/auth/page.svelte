@@ -2,6 +2,9 @@
   import FormLogin from "../components/form/login/form_login.svelte";
   import FormRegister from "../components/form/register/form_register.svelte";
   import Wave from "../components/form/wave/wave.svelte";
+  import { Islogged } from "../store/store";
+
+  console.log($Islogged);
 
   let visibleLogin = true;
 
@@ -27,6 +30,7 @@
     {/if}
   </div>
   <div class="h-full w-1/2 hidden lg:flex justify-center items-center z-[1]">
+    <img alt="" class="w-3/5" src="" />
   </div>
   <div class="absolute top-0 left-0 w-full h-full z-[0]">
     <Wave />
