@@ -1,12 +1,18 @@
 <script lang="ts">
     import { DateTime } from "luxon";
+    import Utils from "../../script/utils";
+    import type { Message, UserMessage } from "../types";
 
     let currentUserId: number = 10;
 
-    let messages: Array<any> = [
+    let messages: Array<Message> = [
         {
-            idUser1: 12,
-            idUser2: 10,
+            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userReceive: {
+                idUser: 10,
+                lastname: "Houpin",
+                firstname: "Armand",
+            },
             content: "yo on fait quoi ?",
             pathMediaMess: null,
             responseMess: null,
@@ -14,8 +20,12 @@
             publishDate: "2022-11-18T09:56:20.001Z",
         },
         {
-            idUser1: 12,
-            idUser2: 10,
+            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userReceive: {
+                idUser: 10,
+                lastname: "Houpin",
+                firstname: "Armand",
+            },
             content: "ouais ouais ouais",
             pathMediaMess: null,
             responseMess: null,
@@ -23,8 +33,8 @@
             publishDate: "2022-11-17T09:56:20.001Z",
         },
         {
-            idUser1: 10,
-            idUser2: 12,
+            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
+            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
             content: "petit bonjour du lendemain",
             pathMediaMess: null,
             responseMess: null,
@@ -32,8 +42,8 @@
             publishDate: "2022-11-17T09:34:13.001Z",
         },
         {
-            idUser1: 10,
-            idUser2: 12,
+            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
+            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
             content: "test triple message",
             pathMediaMess: null,
             responseMess: null,
@@ -41,8 +51,8 @@
             publishDate: "2022-11-16T14:45:38.001Z",
         },
         {
-            idUser1: 10,
-            idUser2: 12,
+            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
+            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
             content: `j'écris un pavé de texte pour tester l'alignement et le bon retour à la ligne du texte d'un message d'un utilisateur`,
             pathMediaMess: null,
             responseMess: null,
@@ -50,8 +60,8 @@
             publishDate: "2022-11-16T14:45:25.001Z",
         },
         {
-            idUser1: 10,
-            idUser2: 12,
+            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
+            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
             content: "je vais voir mes parents",
             pathMediaMess: null,
             responseMess: null,
@@ -59,8 +69,12 @@
             publishDate: "2022-11-16T14:45:02.001Z",
         },
         {
-            idUser1: 12,
-            idUser2: 10,
+            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userReceive: {
+                idUser: 10,
+                lastname: "Houpin",
+                firstname: "Armand",
+            },
             content: "et toi ?",
             pathMediaMess: null,
             responseMess: null,
@@ -68,8 +82,12 @@
             publishDate: "2022-11-16T14:44:45.001Z",
         },
         {
-            idUser1: 12,
-            idUser2: 10,
+            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userReceive: {
+                idUser: 10,
+                lastname: "Houpin",
+                firstname: "Armand",
+            },
             content: "et on va faire du camping",
             pathMediaMess: null,
             responseMess: null,
@@ -77,8 +95,12 @@
             publishDate: "2022-11-16T14:44:45.001Z",
         },
         {
-            idUser1: 12,
-            idUser2: 10,
+            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userReceive: {
+                idUser: 10,
+                lastname: "Houpin",
+                firstname: "Armand",
+            },
             content: "du surf avec des potes",
             pathMediaMess: null,
             responseMess: null,
@@ -86,8 +108,8 @@
             publishDate: "2022-11-16T14:44:36.001Z",
         },
         {
-            idUser1: 10,
-            idUser2: 12,
+            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
+            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
             content: "tu fais quoi ce week-end ?",
             pathMediaMess: null,
             responseMess: null,
@@ -95,8 +117,12 @@
             publishDate: "2022-11-16T14:44:21.001Z",
         },
         {
-            idUser1: 12,
-            idUser2: 10,
+            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userReceive: {
+                idUser: 10,
+                lastname: "Houpin",
+                firstname: "Armand",
+            },
             content: "salut Jean-Last",
             pathMediaMess: null,
             responseMess: null,
@@ -104,8 +130,8 @@
             publishDate: "2022-11-16T14:43:36.001Z",
         },
         {
-            idUser1: 10,
-            idUser2: 12,
+            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
+            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
             content: "bonjour Jaqueline",
             pathMediaMess: null,
             responseMess: null,
@@ -114,95 +140,73 @@
         },
     ];
 
-    function dateWithYearFormat(date: DateTime): string {
-        return date.toFormat("d MMMM y, HH:mm");
-    }
-
-    function dateWithHourFormat(date: DateTime): string {
-        return date.toFormat("d MMMM, HH:mm");
-    }
-
-    function sameDate(dateMessage1: string, dateMessage2: string): boolean {
-        return (
-            sameDay(dateMessage1, dateMessage2) &&
-            sameMonth(dateMessage1, dateMessage2) &&
-            sameYear(dateMessage1, dateMessage2)
-        );
-    }
-
-    function sameDay(dateMessage1: string, dateMessage2: string): boolean {
-        return (
-            DateTime.fromISO(dateMessage1).day ===
-            DateTime.fromISO(dateMessage2).day
-        );
-    }
-
-    function sameMonth(dateMessage1: string, dateMessage2: string): boolean {
-        return (
-            DateTime.fromISO(dateMessage1).month ===
-            DateTime.fromISO(dateMessage2).month
-        );
-    }
-
-    function sameYear(dateMessage1: string, dateMessage2: string): boolean {
-        return (
-            DateTime.fromISO(dateMessage1).year ===
-            DateTime.fromISO(dateMessage2).year
-        );
-    }
-
     function isUserFromNextMessageSame(
-        msgs: Array<any>,
+        msgs: Array<Message>,
         index: number
     ): boolean {
         return (
-            msgs[index - 1 >= 0 ? index - 1 : index].idUser1 ===
-            msgs[index].idUser1
+            msgs[index - 1 >= 0 ? index - 1 : index].userSend.idUser ===
+            msgs[index].userSend.idUser
         );
     }
 
     function isUserFromLastMessageSame(
-        msgs: Array<any>,
+        msgs: Array<Message>,
         index: number
     ): boolean {
         return (
-            msgs[index + 1 < msgs.length ? index + 1 : index].idUser1 ===
-            msgs[index].idUser1
+            msgs[index + 1 < msgs.length ? index + 1 : index].userSend
+                .idUser === msgs[index].userSend.idUser
         );
     }
 
-    function isAloneMessage(msgs: Array<any>, index: number): boolean {
+    function isAloneMessage(msgs: Array<Message>, index: number): boolean {
         if (index === 0)
             return (
                 !isUserFromLastMessageSame(msgs, index) ||
-                !sameDate(msgs[index].publishDate, msgs[index + 1].publishDate)
+                !Utils.sameDateFromStr(
+                    msgs[index].publishDate,
+                    msgs[index + 1].publishDate
+                )
             );
         else if (index === msgs.length - 1)
             return (
                 !isUserFromNextMessageSame(msgs, index) ||
-                !sameDate(msgs[index].publishDate, msgs[index - 1].publishDate)
+                !Utils.sameDateFromStr(
+                    msgs[index].publishDate,
+                    msgs[index - 1].publishDate
+                )
             );
         else if (
             !isUserFromLastMessageSame(msgs, index) ||
-            !sameDate(msgs[index].publishDate, msgs[index + 1].publishDate)
+            !Utils.sameDateFromStr(
+                msgs[index].publishDate,
+                msgs[index + 1].publishDate
+            )
         )
             return (
                 !isUserFromNextMessageSame(msgs, index) ||
-                !sameDate(msgs[index].publishDate, msgs[index - 1].publishDate)
+                !Utils.sameDateFromStr(
+                    msgs[index].publishDate,
+                    msgs[index - 1].publishDate
+                )
             );
         else return false;
     }
 
-    function isFirstMessage(msgs: Array<any>, index: number): boolean {
+    function isFirstMessage(msgs: Array<Message>, index: number): boolean {
         if (index === msgs.length - 1 || isAloneMessage(msgs, index))
             return false;
         return (
             !isUserFromLastMessageSame(msgs, index) ||
-            !sameDate(msgs[index].publishDate, msgs[index + 1].publishDate)
+            !Utils.sameDateFromStr(
+                msgs[index].publishDate,
+                msgs[index + 1].publishDate
+            )
         );
     }
 
-    function isMiddleMessage(msgs: Array<any>, index: number): boolean {
+    function isMiddleMessage(msgs: Array<Message>, index: number): boolean {
         if (
             index === msgs.length - 1 ||
             index === 0 ||
@@ -211,44 +215,67 @@
             return false;
         return (
             isUserFromLastMessageSame(msgs, index) ||
-            (!sameDate(msgs[index].publishDate, msgs[index + 1].publishDate) &&
+            (!Utils.sameDateFromStr(
+                msgs[index].publishDate,
+                msgs[index + 1].publishDate
+            ) &&
                 isUserFromNextMessageSame(msgs, index)) ||
-            !sameDate(msgs[index].publishDate, msgs[index - 1].publishDate)
+            !Utils.sameDateFromStr(
+                msgs[index].publishDate,
+                msgs[index - 1].publishDate
+            )
         );
     }
 
-    function isLastMessage(msgs: Array<any>, index: number): boolean {
+    function isLastMessage(msgs: Array<Message>, index: number): boolean {
         if (index === 0 || isAloneMessage(msgs, index)) return false;
         return (
             !isUserFromNextMessageSame(msgs, index) ||
-            !sameDate(msgs[index].publishDate, msgs[index - 1].publishDate)
+            !Utils.sameDateFromStr(
+                msgs[index].publishDate,
+                msgs[index - 1].publishDate
+            )
         );
+    }
+
+    function formatUser(user: UserMessage) {
+        return user.firstname + " " + user.lastname;
     }
 </script>
 
-<div class="h-full w-full bg-white overflow-y-scroll flex flex-col-reverse">
+<div
+    class="h-full w-full overflow-y-scroll flex flex-col-reverse chat text-white"
+>
     {#each messages as message, i}
         <div class="w-full flex flex-col">
-            {#if i === messages.length - 1 && 0 < i - 1 && !sameYear(message.publishDate, messages[i - 1].publishDate)}
+            {#if i === messages.length - 1 && 0 < i - 1 && !Utils.sameYearFromStr(message.publishDate, messages[i - 1].publishDate)}
                 <p class="date">
-                    {dateWithYearFormat(DateTime.fromISO(message.publishDate))}
+                    {Utils.dateWithYearMessageFormat(
+                        DateTime.fromISO(message.publishDate)
+                    )}
                 </p>
             {:else if i === messages.length - 1 && 0 < i - 1}
                 <p class="date">
-                    {dateWithHourFormat(DateTime.fromISO(message.publishDate))}
+                    {Utils.dateWithHourMessageFormat(
+                        DateTime.fromISO(message.publishDate)
+                    )}
                 </p>
             {/if}
-            {#if i < messages.length - 1 && !sameYear(message.publishDate, messages[i + 1].publishDate)}
+            {#if i < messages.length - 1 && !Utils.sameYearFromStr(message.publishDate, messages[i + 1].publishDate)}
                 <p class="date">
-                    {dateWithYearFormat(DateTime.fromISO(message.publishDate))}
+                    {Utils.dateWithYearMessageFormat(
+                        DateTime.fromISO(message.publishDate)
+                    )}
                 </p>
-            {:else if i < messages.length - 1 && (!sameDay(message.publishDate, messages[i + 1].publishDate) || !sameMonth(message.publishDate, messages[i + 1].publishDate))}
+            {:else if i < messages.length - 1 && (!Utils.sameDayFromStr(message.publishDate, messages[i + 1].publishDate) || !Utils.sameMonthFromStr(message.publishDate, messages[i + 1].publishDate))}
                 <p class="date">
-                    {dateWithHourFormat(DateTime.fromISO(message.publishDate))}
+                    {Utils.dateWithHourMessageFormat(
+                        DateTime.fromISO(message.publishDate)
+                    )}
                 </p>
             {/if}
             <div
-                class="{message.idUser1 === currentUserId
+                class="{message.userSend.idUser === currentUserId
                     ? 'ctnMyMess'
                     : 'ctnOtherMess'} w-full flex"
             >
@@ -259,12 +286,19 @@
                     )}
                     class="flex my-0.5"
                 >
-                    {#if message.idUser1 !== currentUserId}
+                    {#if message.userSend.idUser !== currentUserId}
                         {#if isAloneMessage(messages, i) || isFirstMessage(messages, i)}
                             <img
-                                src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
+                                src="https://ui-avatars.com/api/?name={formatUser(
+                                    message.userSend
+                                )}&color={Utils.stringToColour(
+                                    formatUser(message.userSend)
+                                )}&background=121212"
                                 alt="user profil picture"
-                                class="userPP"
+                                class="userPP border border-[{'#' +
+                                    Utils.stringToColour(
+                                        formatUser(message.userSend)
+                                    )}]"
                             />
                         {:else}
                             <div class="userPP" />
@@ -275,7 +309,7 @@
                         class:firstMess={isFirstMessage(messages, i)}
                         class:middleMess={isMiddleMessage(messages, i)}
                         class:lastMess={isLastMessage(messages, i)}
-                        class="{message.idUser1 === currentUserId
+                        class="{message.userSend.idUser === currentUserId
                             ? 'messMeBG messMe'
                             : 'messOtherBG messOther'}
                             flex whitespace-pre-line shrink w-fit py-2 px-3 text-base"
@@ -289,14 +323,23 @@
 </div>
 
 <style lang="scss">
+    .chat {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .chat::-webkit-scrollbar {
+        display: none;
+    }
+
     .date {
         text-align: center;
         margin: 0.5rem 0;
     }
 
     .userPP {
-        width: 30px;
-        height: 30px;
+        min-width: 30px;
+        max-height: 30px;
         border-radius: 50%;
         margin: auto 5px;
     }
