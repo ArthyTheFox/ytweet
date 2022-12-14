@@ -1,11 +1,18 @@
 import { DateTime } from "luxon";
+import type { UserMessage } from "../src/types";
 
 export default class Utils {
-    
+
+    colors: {
+        'main': '#25232e';
+        'main-fonce': '#191820';
+        'extra': '#23b2a4';
+    }
+
     static dateWithYearMessageFormat(date: DateTime): string {
         return date.toFormat("d MMMM y, HH:mm");
     }
-    
+
     static dateWithHourMessageFormat(date: DateTime): string {
         return date.toFormat("d MMMM, HH:mm");
     }
@@ -13,7 +20,7 @@ export default class Utils {
     static dateWithYearFormat(date: DateTime): string {
         return date.toFormat("d MMMM y");
     }
-    
+
     static dateWithHourFormat(date: DateTime): string {
         return date.toFormat("d MMMM");
     }
@@ -58,5 +65,17 @@ export default class Utils {
             colour += ("00" + value.toString(16)).substr(-2);
         }
         return colour;
+    }
+
+    static formatUser(user: UserMessage) {
+        return user.firstname + " " + user.lastname;
+    }
+
+    static imageUser(user: UserMessage) {
+        return "https://ui-avatars.com/api/?name=" + Utils.formatUser(user) + "&color=" + Utils.stringToColour(Utils.formatUser(user)) + "&background=121212"
+    }
+
+    static borderClass(user: UserMessage) {
+        return `border border-[#${Utils.stringToColour(Utils.formatUser(user))}]`;
     }
 }

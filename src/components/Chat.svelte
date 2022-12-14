@@ -2,8 +2,14 @@
     import { DateTime } from "luxon";
     import Utils from "../../script/utils";
     import type { Message, UserMessage } from "../types";
+    import ripple from "../../script/ripple";
+    import { fly } from "svelte/transition";
+    import { quintOut, quintIn } from "svelte/easing";
 
     let currentUserId: number = 10;
+
+    let y: number;
+    let chat: any;
 
     let messages: Array<Message> = [
         {
@@ -237,89 +243,106 @@
             )
         );
     }
-
-    function formatUser(user: UserMessage) {
-        return user.firstname + " " + user.lastname;
-    }
 </script>
 
 <div
-    class="h-full w-full overflow-y-scroll flex flex-col-reverse chat text-white"
+    class="relative h-full w-full flex justify-center text-white border-4 border-white"
 >
-    {#each messages as message, i}
-        <div class="w-full flex flex-col">
-            {#if i === messages.length - 1 && 0 < i - 1 && !Utils.sameYearFromStr(message.publishDate, messages[i - 1].publishDate)}
-                <p class="date">
-                    {Utils.dateWithYearMessageFormat(
-                        DateTime.fromISO(message.publishDate)
-                    )}
-                </p>
-            {:else if i === messages.length - 1 && 0 < i - 1}
-                <p class="date">
-                    {Utils.dateWithHourMessageFormat(
-                        DateTime.fromISO(message.publishDate)
-                    )}
-                </p>
-            {/if}
-            {#if i < messages.length - 1 && !Utils.sameYearFromStr(message.publishDate, messages[i + 1].publishDate)}
-                <p class="date">
-                    {Utils.dateWithYearMessageFormat(
-                        DateTime.fromISO(message.publishDate)
-                    )}
-                </p>
-            {:else if i < messages.length - 1 && (!Utils.sameDayFromStr(message.publishDate, messages[i + 1].publishDate) || !Utils.sameMonthFromStr(message.publishDate, messages[i + 1].publishDate))}
-                <p class="date">
-                    {Utils.dateWithHourMessageFormat(
-                        DateTime.fromISO(message.publishDate)
-                    )}
-                </p>
-            {/if}
-            <div
-                class="{message.userSend.idUser === currentUserId
-                    ? 'ctnMyMess'
-                    : 'ctnOtherMess'} w-full flex"
-            >
-                <div
-                    class:lastMessFromUser={!isUserFromNextMessageSame(
-                        messages,
-                        i
-                    )}
-                    class="flex my-0.5"
-                >
-                    {#if message.userSend.idUser !== currentUserId}
-                        {#if isAloneMessage(messages, i) || isFirstMessage(messages, i)}
-                            <img
-                                src="https://ui-avatars.com/api/?name={formatUser(
-                                    message.userSend
-                                )}&color={Utils.stringToColour(
-                                    formatUser(message.userSend)
-                                )}&background=121212"
-                                alt="user profil picture"
-                                class="userPP border border-[{'#' +
-                                    Utils.stringToColour(
-                                        formatUser(message.userSend)
-                                    )}]"
-                            />
-                        {:else}
-                            <div class="userPP" />
-                        {/if}
-                    {/if}
-                    <p
-                        class:aloneMess={isAloneMessage(messages, i)}
-                        class:firstMess={isFirstMessage(messages, i)}
-                        class:middleMess={isMiddleMessage(messages, i)}
-                        class:lastMess={isLastMessage(messages, i)}
-                        class="{message.userSend.idUser === currentUserId
-                            ? 'messMeBG messMe'
-                            : 'messOtherBG messOther'}
-                            flex whitespace-pre-line shrink w-fit py-2 px-3 text-base"
-                    >
-                        {message.content}
+    {#if chat && chat.offsetHeight + y < chat.scrollHeight - 100}
+        <div
+            in:fly={{ duration: 300, y: 50, opacity: 0.5, easing: quintOut }}
+            out:fly={{ duration: 300, y: 50, opacity: 0.5, easing: quintIn }}
+            use:ripple
+            class="absolute top-[3%] arrow-button"
+        >
+            <ion-icon name="arrow-up-outline" />
+        </div>
+    {/if}
+    <div
+        class="h-full w-full overflow-y-scroll flex flex-col-reverse chat"
+        bind:this={chat}
+        on:scroll={() => (y = Math.abs(chat.scrollTop))}
+    >
+        {#each messages as message, i}
+            <div class="w-full flex flex-col">
+                {#if i === messages.length - 1 && 0 < i - 1 && !Utils.sameYearFromStr(message.publishDate, messages[i - 1].publishDate)}
+                    <p class="date">
+                        {Utils.dateWithYearMessageFormat(
+                            DateTime.fromISO(message.publishDate)
+                        )}
                     </p>
+                {:else if i === messages.length - 1 && 0 < i - 1}
+                    <p class="date">
+                        {Utils.dateWithHourMessageFormat(
+                            DateTime.fromISO(message.publishDate)
+                        )}
+                    </p>
+                {/if}
+                {#if i < messages.length - 1 && !Utils.sameYearFromStr(message.publishDate, messages[i + 1].publishDate)}
+                    <p class="date">
+                        {Utils.dateWithYearMessageFormat(
+                            DateTime.fromISO(message.publishDate)
+                        )}
+                    </p>
+                {:else if i < messages.length - 1 && (!Utils.sameDayFromStr(message.publishDate, messages[i + 1].publishDate) || !Utils.sameMonthFromStr(message.publishDate, messages[i + 1].publishDate))}
+                    <p class="date">
+                        {Utils.dateWithHourMessageFormat(
+                            DateTime.fromISO(message.publishDate)
+                        )}
+                    </p>
+                {/if}
+                <div
+                    class="{message.userSend.idUser === currentUserId
+                        ? 'ctnMyMess'
+                        : 'ctnOtherMess'} w-full flex"
+                >
+                    <div
+                        class:lastMessFromUser={!isUserFromNextMessageSame(
+                            messages,
+                            i
+                        )}
+                        class="flex my-0.5"
+                    >
+                        {#if message.userSend.idUser !== currentUserId}
+                            {#if isAloneMessage(messages, i) || isFirstMessage(messages, i)}
+                                <img
+                                    src={Utils.imageUser(message.userSend)}
+                                    alt="user profil picture"
+                                    class="userPP {Utils.borderClass(
+                                        message.userSend
+                                    )}"
+                                />
+                            {:else}
+                                <div class="userPP" />
+                            {/if}
+                        {/if}
+                        <p
+                            class:aloneMess={isAloneMessage(messages, i)}
+                            class:firstMess={isFirstMessage(messages, i)}
+                            class:middleMess={isMiddleMessage(messages, i)}
+                            class:lastMess={isLastMessage(messages, i)}
+                            class="{message.userSend.idUser === currentUserId
+                                ? 'messMeBG messMe'
+                                : 'messOtherBG messOther'}
+                            flex whitespace-pre-line shrink w-fit py-2 px-3 text-base"
+                        >
+                            {message.content}
+                        </p>
+                    </div>
                 </div>
             </div>
+        {/each}
+    </div>
+    {#if y > 100}
+        <div
+            in:fly={{ duration: 300, y: -50, opacity: 0.5, easing: quintOut }}
+            out:fly={{ duration: 300, y: -50, opacity: 0.5, easing: quintIn }}
+            use:ripple
+            class="absolute bottom-[3%] arrow-button"
+        >
+            <ion-icon name="arrow-down-outline" />
         </div>
-    {/each}
+    {/if}
 </div>
 
 <style lang="scss">
@@ -330,6 +353,23 @@
 
     .chat::-webkit-scrollbar {
         display: none;
+    }
+
+    .arrow-button {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        border: 1px solid #25232e;
+        cursor: pointer;
+        background-color: #121212;
+        transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+
+        &:hover {
+            background-color: #23b2a4;
+        }
     }
 
     .date {
