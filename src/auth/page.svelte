@@ -1,13 +1,16 @@
 <script>
+  import { onMount } from "svelte";
   import { push } from "svelte-spa-router";
-  import FormLogin from "../components/form/login/form_login.svelte";
-  import FormRegister from "../components/form/register/form_register.svelte";
-  import Wave from "../components/form/wave/wave.svelte";
+  import FormLogin from "./Partials/login/form_login.svelte";
+  import FormRegister from "./Partials/register/form_register.svelte";
+  import Wave from "./Partials/wave/wave.svelte";
   import { Islogged } from "../store/store";
 
-  if($Islogged){
-		push('/')
-	}
+  onMount(() => {
+    if ($Islogged) {
+      push("/");
+    }
+  });
 
   let visibleLogin = true;
 
