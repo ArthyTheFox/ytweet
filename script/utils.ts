@@ -74,8 +74,4 @@ export default class Utils {
     static imageUser(user: UserMessage) {
         return "https://ui-avatars.com/api/?name=" + Utils.formatUser(user) + "&color=" + Utils.stringToColour(Utils.formatUser(user)) + "&background=121212"
     }
-
-    static borderClass(user: UserMessage) {
-        return `border border-[#${Utils.stringToColour(Utils.formatUser(user))}]`;
-    }
 }
