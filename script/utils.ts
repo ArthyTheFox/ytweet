@@ -9,20 +9,39 @@ export default class Utils {
         'extra': '#23b2a4';
     }
 
-    static dateWithYearMessageFormat(date: DateTime): string {
-        return date.toFormat("d MMMM y, HH:mm");
+    static traductionDate(date: string): string {
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const monthsTrad = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+        let changed = false;
+        let index = 0;
+        while (!changed && index < months.length) {
+            if (date.includes(months[index])) {
+                changed = true;
+                date = date.replace(months[index], monthsTrad[index]);
+            }
+            index++;
+        }
+        return date;
     }
 
-    static dateWithHourMessageFormat(date: DateTime): string {
-        return date.toFormat("d MMMM, HH:mm");
+    static dateWithYearMessageFormat(date: DateTime): string {
+        return this.traductionDate(date.toFormat("d MMMM y"));
+    }
+
+    static dateMessageFormat(date: DateTime): string {
+        return this.traductionDate(date.toFormat("d MMMM, HH:mm"));
     }
 
     static dateWithYearFormat(date: DateTime): string {
-        return date.toFormat("d MMMM y");
+        return this.traductionDate(date.toFormat("d MMMM y"));
     }
 
     static dateWithHourFormat(date: DateTime): string {
-        return date.toFormat("d MMMM");
+        return this.traductionDate(date.toFormat("d MMMM"));
+    }
+
+    static timeFormat(date: DateTime): string {
+        return date.toFormat("HH:mm");
     }
 
     static sameDateFromStr(dateMessage1: string, dateMessage2: string): boolean {

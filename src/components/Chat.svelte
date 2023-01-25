@@ -3,8 +3,8 @@
     import Utils from "../../script/utils";
     import type { Message, UserMessage } from "../types";
     import ripple from "../../script/ripple";
-    import { fly } from "svelte/transition";
-    import { quintOut, quintIn } from "svelte/easing";
+    import { fly, slide } from "svelte/transition";
+    import { quintOut, quintIn, quadOut } from "svelte/easing";
     import TextAreaAutosizeChat from "./TextAreaAutosizeChat.svelte";
 
     let currentUser: UserMessage = {
@@ -16,7 +16,6 @@
     let y: number = 0;
     let chat: any;
     let textValue = ``;
-
     let messages: Array<Message> = [
         {
             userSend: { idUser: 16, lastname: "Raoult", firstname: "Didier" },
@@ -164,6 +163,7 @@
             publishDate: "2021-10-24T11:51:31.001Z",
         },
     ];
+    let messageClicked: Array<Boolean> = new Array(messages.length).fill(false);
 
     function isUserFromNextMessageSame(
         msgs: Array<Message>,
@@ -263,6 +263,54 @@
         );
     }
 
+    function displayDate(index: number, message: Message) {
+        let date: string = "";
+        if (index === messages.length - 1 && 0 < index - 1) {
+            if (
+                !Utils.sameYearFromStr(
+                    message.publishDate,
+                    messages[index - 1].publishDate
+                )
+            ) {
+                date = Utils.dateWithYearMessageFormat(
+                    DateTime.fromISO(message.publishDate)
+                );
+            } else {
+                date = Utils.dateMessageFormat(
+                    DateTime.fromISO(message.publishDate)
+                );
+            }
+        } else if (index < messages.length - 1) {
+            if (
+                !Utils.sameYearFromStr(
+                    message.publishDate,
+                    messages[index + 1].publishDate
+                )
+            ) {
+                date = Utils.dateWithYearMessageFormat(
+                    DateTime.fromISO(message.publishDate)
+                );
+            } else if (
+                !Utils.sameDayFromStr(
+                    message.publishDate,
+                    messages[index + 1].publishDate
+                ) ||
+                !Utils.sameMonthFromStr(
+                    message.publishDate,
+                    messages[index + 1].publishDate
+                )
+            ) {
+                date = Utils.dateMessageFormat(
+                    DateTime.fromISO(message.publishDate)
+                );
+            }
+        }
+        if (date === "") return "";
+        return `<p class="date">
+            ${date}
+        </p>`;
+    }
+
     function scrollTo(toTop: boolean) {
         chat.scrollBy({
             top: toTop ? -chat.offsetHeight : chat.offsetHeight,
@@ -272,7 +320,7 @@
     }
 
     function addMessage() {
-        console.log(DateTime.now().toSQL());
+        // console.log(DateTime.now().toSQL());
         if (textValue.trim() !== "") {
             let newMessage: Message = {
                 userSend: {
@@ -292,6 +340,7 @@
                 publishDate: DateTime.now().toISO(),
             };
             messages = [newMessage, ...messages];
+            messageClicked = [false, ...messageClicked];
             textValue = ``;
         }
     }
@@ -315,9 +364,10 @@
                     opacity: 0.5,
                     easing: quintIn,
                 }}
-                use:ripple
+                use:ripple={{ opacity: "0.2", color: "#fff" }}
                 class="absolute top-[3%] arrow-button"
                 on:click={() => scrollTo(true)}
+                on:keydown={() => scrollTo(true)}
             >
                 <ion-icon name="arrow-up-outline" />
             </div>
@@ -328,75 +378,104 @@
             on:scroll={() => (y = Math.abs(chat.scrollTop))}
         >
             {#each messages as message, i}
-                <div class="w-full flex flex-col">
-                    {#if i === messages.length - 1 && 0 < i - 1 && !Utils.sameYearFromStr(message.publishDate, messages[i - 1].publishDate)}
-                        <p class="date">
-                            {Utils.dateWithYearMessageFormat(
-                                DateTime.fromISO(message.publishDate)
-                            )}
-                        </p>
-                    {:else if i === messages.length - 1 && 0 < i - 1}
-                        <p class="date">
-                            {Utils.dateWithHourMessageFormat(
-                                DateTime.fromISO(message.publishDate)
-                            )}
-                        </p>
-                    {/if}
-                    {#if i < messages.length - 1 && !Utils.sameYearFromStr(message.publishDate, messages[i + 1].publishDate)}
-                        <p class="date">
-                            {Utils.dateWithYearMessageFormat(
-                                DateTime.fromISO(message.publishDate)
-                            )}
-                        </p>
-                    {:else if i < messages.length - 1 && (!Utils.sameDayFromStr(message.publishDate, messages[i + 1].publishDate) || !Utils.sameMonthFromStr(message.publishDate, messages[i + 1].publishDate))}
-                        <p class="date">
-                            {Utils.dateWithHourMessageFormat(
-                                DateTime.fromISO(message.publishDate)
-                            )}
-                        </p>
-                    {/if}
-                    <div
-                        class="{message.userSend.idUser === currentUser.idUser
-                            ? 'ctnMyMess'
-                            : 'ctnOtherMess'} w-full flex"
-                    >
+                {#key i !== 0 || message}
+                    <div class="w-full flex flex-col">
+                        {@html displayDate(i, message)}
                         <div
-                            class:lastMessFromUser={!isUserFromNextMessageSame(
-                                messages,
-                                i
-                            )}
-                            class="flex my-0.5"
+                            class="{message.userSend.idUser ===
+                            currentUser.idUser
+                                ? 'ctnMyMess'
+                                : 'ctnOtherMess'} w-full flex"
+                            in:fly={{
+                                duration: 300,
+                                y: 30,
+                                easing: quadOut,
+                            }}
                         >
-                            {#if message.userSend.idUser !== currentUser.idUser}
-                                {#if isAloneMessage(messages, i) || isFirstMessage(messages, i)}
-                                    <img
-                                        src={Utils.imageUser(message.userSend)}
-                                        alt="user profil picture"
-                                        class="userPP border"
-                                        style="border-color: #{Utils.stringToColour(
-                                            Utils.formatUser(message.userSend)
-                                        )}"
-                                    />
-                                {:else}
-                                    <div class="userPP" />
-                                {/if}
-                            {/if}
-                            <p
-                                class:aloneMess={isAloneMessage(messages, i)}
-                                class:firstMess={isFirstMessage(messages, i)}
-                                class:middleMess={isMiddleMessage(messages, i)}
-                                class:lastMess={isLastMessage(messages, i)}
-                                class="{message.userSend.idUser ===
-                                currentUser.idUser
-                                    ? 'messMeBG messMe'
-                                    : 'messOtherBG messOther'}
-                            flex whitespace-pre-line shrink w-fit py-2 px-3 text-base"
+                            <div
+                                class:lastMessFromUser={!isUserFromNextMessageSame(
+                                    messages,
+                                    i
+                                )}
+                                class="flex flex-col my-0.5"
                             >
-                                {message.content}
-                            </p>
+                                <div class="flex">
+                                    {#if message.userSend.idUser !== currentUser.idUser}
+                                        {#if isAloneMessage(messages, i) || isFirstMessage(messages, i)}
+                                            <img
+                                                src={Utils.imageUser(
+                                                    message.userSend
+                                                )}
+                                                alt="user profil pic"
+                                                class="userPP border select-none"
+                                                style="border-color: #{Utils.stringToColour(
+                                                    Utils.formatUser(
+                                                        message.userSend
+                                                    )
+                                                )}"
+                                                on:click={() => console.log("user profil")}
+                                                on:keydown={() => console.log("user profil")}
+                                            />
+                                        {:else}
+                                            <div class="userPP" />
+                                        {/if}
+                                    {/if}
+                                    <p
+                                        class:aloneMess={isAloneMessage(
+                                            messages,
+                                            i
+                                        )}
+                                        class:firstMess={isFirstMessage(
+                                            messages,
+                                            i
+                                        )}
+                                        class:middleMess={isMiddleMessage(
+                                            messages,
+                                            i
+                                        )}
+                                        class:lastMess={isLastMessage(
+                                            messages,
+                                            i
+                                        )}
+                                        class="{message.userSend.idUser ===
+                                        currentUser.idUser
+                                            ? 'messMeBG messMe'
+                                            : 'messOtherBG messOther'}
+                                flex whitespace-pre-line shrink w-fit py-2 px-3 text-base"
+                                        on:click={() =>
+                                            (messageClicked[i] =
+                                                !messageClicked[i])}
+                                        on:keydown={() =>
+                                            (messageClicked[i] =
+                                                !messageClicked[i])}
+                                    >
+                                        {message.content}
+                                    </p>
+                                </div>
+                                {#if messageClicked[i]}
+                                    <div
+                                        class="{message.userSend.idUser ===
+                                        currentUser.idUser
+                                            ? 'self-start'
+                                            : 'self-end'} px-[10%]"
+                                        transition:slide={{
+                                            duration: 250,
+                                            easing: quadOut,
+                                        }}
+                                    >
+                                        <p>
+                                            {Utils.timeFormat(
+                                                DateTime.fromISO(
+                                                    message.publishDate
+                                                )
+                                            )}
+                                        </p>
+                                    </div>
+                                {/if}
+                            </div>
                         </div>
                     </div>
-                </div>
+                {/key}
             {/each}
         </div>
         {#if y > 100}
@@ -413,28 +492,36 @@
                     opacity: 0.5,
                     easing: quintIn,
                 }}
-                use:ripple
                 class="absolute bottom-[3%] arrow-button"
+                use:ripple={{ opacity: "0.2", color: "#fff" }}
                 on:click={() => scrollTo(false)}
+                on:keydown={() => scrollTo(false)}
             >
                 <ion-icon name="arrow-down-outline" />
             </div>
         {/if}
     </div>
-    <div
-        class="flex overflow-visible h-[50px] w-full justify-between items-end p-1 z-10"
-    >
-    <div class="flex h-full px-2 justify-center items-center">
-        <div class="send-button">
-            <ion-icon class="w-8 text-white" name="arrow-up-outline" />
+    <div class="flex h-[50px] w-full justify-between items-end p-1 z-10">
+        <div
+            class="flex h-full px-2 justify-center items-center min-w-[3.5rem]"
+        >
+            <div
+                class="send-button"
+                use:ripple={{ opacity: "0.2", color: "#fff" }}
+                on:click={() => addMessage()}
+                on:keydown={() => addMessage()}
+            >
+                <ion-icon class="w-8 text-white" name="arrow-up-outline" />
+            </div>
         </div>
-    </div>
-        <TextAreaAutosizeChat
-            bind:value={textValue}
-            minRows={1}
-            maxRows={6}
-            {addMessage}
-        />
+        <div class="flex h-full overflow-hidden w-full">
+            <TextAreaAutosizeChat
+                bind:value={textValue}
+                minRows={1}
+                maxRows={6}
+                {addMessage}
+            />
+        </div>
     </div>
 </div>
 
@@ -468,7 +555,7 @@
         }
     }
     .send-button {
-        z-index: 1;
+        position: absolute;
         width: 40px;
         height: 40px;
         display: flex;
@@ -479,7 +566,6 @@
         border-style: solid;
         border-color: #626666;
         cursor: pointer;
-        background-color: transparent;
         transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 
         &:hover {
@@ -488,7 +574,7 @@
         }
     }
 
-    .date {
+    :global(.date) {
         text-align: center;
         margin: 0.5rem 0;
     }

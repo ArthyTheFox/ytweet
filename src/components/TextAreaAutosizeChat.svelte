@@ -8,7 +8,6 @@
     $: maxHeight = maxRows ? `${1 + maxRows * 1.2}em` : `auto`;
 
     function onKeyPress(e) {
-        console.log(e)
         if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault();
             addMessage();
