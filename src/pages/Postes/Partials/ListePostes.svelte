@@ -8,8 +8,8 @@
 
     let postes: any = [];
 
-    onMount(async () => {
-        // postes = await postesService.postes();
+    onMount(async () => {   
+        postes = await postesService.postes();  
     });
 
     const PostesDetails = (idPoste:number) => {
@@ -35,9 +35,9 @@
         </div>
     </div>
     <div class="h-[90%] relative text-white overflow-y-scroll">
-        <!-- {#each postes as poste} -->
+        {#each postes as poste}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- <div
+            <div
                 class="w-full flex flex-col border-b border-main py-2 px-4 hover:bg-extra/10 cursor-pointer"
                 on:click={() => PostesDetails(poste.id)}
             >
@@ -86,7 +86,7 @@
                     <div class="mr-8 border rounded-lg border-main">
                         <img
                             class="rounded-lg"
-                            src="{poste.pathMedia}"
+                            src="http://localhost:8000/media/{poste.pathMedia}"
                             alt="#"
                         />
                     </div>
@@ -130,8 +130,8 @@
                         </div>
                     </div>
                 </div>
-            </div> -->
-        <!-- {/each} -->
+            </div>
+        {/each}
     </div>
 </div>
 

@@ -18,7 +18,7 @@
         >
             <button
                 type="button"
-                class="z-[99] rounded-full w-12 h-12 border border-main hover:bg-extra text-white flex justify-center items-center duration-300"
+                class="z-[99] rounded-full bg-main shadow-lg w-12 h-12 hover:bg-extra text-white flex justify-center items-center duration-300"
                 on:click={() => (addShow = !addShow)}
             >
             <ion-icon name="add-outline"></ion-icon>

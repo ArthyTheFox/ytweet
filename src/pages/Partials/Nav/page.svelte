@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { push } from "svelte-spa-router";
     import MyStore from "../../../store";
     import { Islogged } from "../../../store/store";
@@ -12,6 +13,13 @@
             (error) => {}
         );
     };
+
+
+    // onMount(() => {
+    //     if (!$Islogged) {
+    //         push("/auth");
+    //     }
+    // });
 </script>
 
 <div class="w-3/12 h-screen text-white">
@@ -68,7 +76,7 @@
                 />
             </div>
             <div class="ml-4">
-                {#if Islogged}
+                {#if $Islogged}
                 <div class="text-[1rem]">
                     {MyStore.state.auth.user.lastname}
                     {MyStore.state.auth.user.firstname}

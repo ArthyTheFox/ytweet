@@ -4,6 +4,9 @@
     import { sineIn, sineOut } from "svelte/easing";
     import postesService from "../../../services/postes.service";
 
+    import EmojiPicker from "../Components/EmojiPicker.svelte";
+
+    import TextArea from "../Components/TextAreaResizeAuto.svelte";
     export let addShow: boolean;
 
     const dispatch = createEventDispatcher();
@@ -12,9 +15,15 @@
         dispatch("quit");
     }
 
-    let content, pathMedia;
+    let content = "",
+        pathMedia = null;
+
+    let urlMedia = null;
 
     $: submit = async () => {
+        console.log(content);
+        console.log(pathMedia.files[0]);
+
         await postesService
             .storePoste({
                 content,
@@ -24,6 +33,26 @@
                 console.log(data);
             });
     };
+
+    const changeDisplayImg = () => {
+        const file = pathMedia.files[0];
+        if (file) {
+            urlMedia = URL.createObjectURL(file);
+        }
+    };
+
+    const clickImgButton = () => {
+        pathMedia.click();
+    };
+
+    const removeMedia = () => {
+        urlMedia = null;
+        pathMedia.value = "";
+    };
+
+    function onEmojiChange(event) {
+        content += event.detail.emoji;
+    }
 </script>
 
 {#if addShow}
@@ -42,49 +71,81 @@
                         <ion-icon name="chevron-forward-outline" />
                     </button>
                 </div>
-                <div class="w-11/12 p-4 border-l border-main">
-                    <div
-                        class="text-white flex justify-center items-center text-[1.25rem] p-2 border-b border-main"
-                    >
-                        Ajouter un poste
-                    </div>
+                <div class="w-11/12 border-l border-main">
                     <form
-                        class="flex flex-col justify-center items-center w-full"
+                        class="flex flex-col w-full"
                         on:submit|preventDefault={submit}
                     >
                         <div class="flex flex-col">
                             <div class="w-full">
-                                <div class="mt-4 flex flex-col w-full">
-                                    <div class="text-white px-4 py-2">
-                                        Content
+                                <div class="flex flex-row px-2">
+                                    <div class="flex flex-col w-full">
+                                        <div
+                                            class="text-white flex flex-row py-2 px-1"
+                                        >
+                                            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                            <ion-icon
+                                                name="image-outline"
+                                                class="w-4 h-4 rounded-full hover:bg-extra/50 p-2 cursor-pointer "
+                                                on:click={clickImgButton}
+                                            />
+                                            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                            <ion-icon
+                                                name="link-outline"
+                                                class="w-4 h-4 rounded-full hover:bg-extra/50 p-2 cursor-pointer ml-2"
+                                            />
+                                            <EmojiPicker on:change={onEmojiChange}/>
+                                        </div>
+                                        <TextArea
+                                            bind:value={content}
+                                            minRows={1}
+                                            maxRows={40}
+                                        />
                                     </div>
-                                    <input
-                                        bind:value={content}
-                                        class="bg-main p-4"
-                                        required
-                                        placeholder="Content"
-                                    />
                                 </div>
-
                                 <div class="mt-4 flex flex-col w-full">
-                                    <div class="text-white px-4 py-2">
-                                        Image
-                                    </div>
                                     <input
                                         type="file"
                                         bind:this={pathMedia}
-                                        class="p-2 rounded-xl"
-                                        required
+                                        class="hidden"
+                                        accept="image/*"
+                                        on:change={changeDisplayImg}
                                     />
+                                    {#if pathMedia?.files[0]}
+                                        <div
+                                            class="w-full min-h-20 flex justify-center items-center relative overflow-hidden"
+                                        >
+                                            <img
+                                                class="rounded-lg w-4/6 h-full"
+                                                alt={urlMedia}
+                                                src={urlMedia}
+                                            />
+                                            <div class="absolute left-2 top-2">
+                                                <div>
+                                                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                                    <ion-icon
+                                                        name="close-outline"
+                                                        class="w-4 h-4 rounded-full bg-main hover:bg-extra/50 p-2 cursor-pointer text-white"
+                                                        on:click={removeMedia}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {/if}
                                 </div>
                             </div>
                         </div>
-                        <button
-                            class="my-4 lg:mt-8 border-2 border-white w-56 relative px-3 py-3 rounded-3xl bg-[#ae2525] hover:bg-rouge/75 text-white "
-                            type="submit"
-                        >
-                            <span>Ajouter</span>
-                        </button>
+                        <div class="w-full flex justify-center items-center">
+                            <button
+                                class="relative w-12 h-12 flex justify-center items-center rounded-full bg-extra/50 hover:bg-extra p-2 cursor-pointer text-white"
+                                type="submit"
+                            >
+                                <ion-icon
+                                    name="rocket-outline"
+                                    class="text-white text-xl"
+                                />
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
