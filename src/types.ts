@@ -12,8 +12,11 @@ export type User = {
 
 export type UserMessage = {
     idUser: number;
+    email: string;
+    pseudo: string;
     lastname: string;
     firstname: string;
+    faculty: Faculty;
 }
 
 export type Message = {
@@ -24,7 +27,13 @@ export type Message = {
     responseMess: string | null;
     view: boolean;
     publishDate: string;
+    params? :any;
 };
+
+export type Position = {
+    x: number;
+    y: number;
+}
 
 export type Faculty = {
     idFaculty: number;

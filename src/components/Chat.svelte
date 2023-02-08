@@ -6,164 +6,189 @@
     import { fly, slide } from "svelte/transition";
     import { quintOut, quintIn, quadOut } from "svelte/easing";
     import TextAreaAutosizeChat from "./TextAreaAutosizeChat.svelte";
+    import ModaleUserProfil from "./ModaleUserProfil.svelte";
 
     let currentUser: UserMessage = {
         idUser: 12,
+        email: "pierre.colin@ynov.com",
+        pseudo: "HellyGelly",
         lastname: "Colin",
         firstname: "Pierre",
+        faculty: {
+            idFaculty: 1,
+            nameFaculty: "Informatique Dev Web",
+        },
+    };
+
+    const Pierre: UserMessage = {
+        idUser: 12,
+        email: "pierre.colin@ynov.com",
+        pseudo: "HellyGelly",
+        lastname: "Colin",
+        firstname: "Pierre",
+        faculty: {
+            idFaculty: 1,
+            nameFaculty: "Informatique Dev Web",
+        },
+    };
+    const Armand: UserMessage = {
+        idUser: 10,
+        email: "armand.houpin@ynov.com",
+        pseudo: "Gafy33",
+        lastname: "Houpin",
+        firstname: "Armand",
+        faculty: {
+            idFaculty: 1,
+            nameFaculty: "Informatique Dev Web",
+        },
+    };
+    const Didier: UserMessage = {
+        idUser: 16,
+        email: "didier.raoult@ynov.com",
+        pseudo: "le King",
+        lastname: "Raoult",
+        firstname: "Didier",
+        faculty: {
+            idFaculty: 3,
+            nameFaculty: "Santé",
+        },
     };
 
     let y: number = 0;
-    let chat: any;
+    let chat: HTMLElement;
     let textValue = ``;
     let messages: Array<Message> = [
         {
-            userSend: { idUser: 16, lastname: "Raoult", firstname: "Didier" },
-            userReceive: {
-                idUser: 10,
-                lastname: "Houpin",
-                firstname: "Armand",
-            },
+            userSend: Didier,
+            userReceive: Armand,
             content: "du surf ?",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-18T09:57:20.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
-            userReceive: {
-                idUser: 10,
-                lastname: "Houpin",
-                firstname: "Armand",
-            },
+            userSend: Pierre,
+            userReceive: Armand,
             content: "yo on fait quoi ?",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-18T09:56:20.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
-            userReceive: {
-                idUser: 10,
-                lastname: "Houpin",
-                firstname: "Armand",
-            },
+            userSend: Pierre,
+            userReceive: Armand,
             content: "ouais ouais ouais",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-17T09:56:20.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
-            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userSend: Armand,
+            userReceive: Pierre,
             content: "petit bonjour du lendemain",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-17T09:34:13.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
-            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userSend: Armand,
+            userReceive: Pierre,
             content: "test triple message",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-16T14:45:38.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
-            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userSend: Armand,
+            userReceive: Pierre,
             content: `j'écris un pavé de texte pour tester l'alignement et le bon retour à la ligne du texte d'un message d'un utilisateur`,
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-16T14:45:25.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
-            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userSend: Armand,
+            userReceive: Pierre,
             content: "je vais voir mes parents",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-16T14:45:02.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
-            userReceive: {
-                idUser: 10,
-                lastname: "Houpin",
-                firstname: "Armand",
-            },
+            userSend: Pierre,
+            userReceive: Armand,
             content: "et toi ?",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-16T14:44:45.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
-            userReceive: {
-                idUser: 10,
-                lastname: "Houpin",
-                firstname: "Armand",
-            },
+            userSend: Pierre,
+            userReceive: Armand,
             content: "et on va faire du camping",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-16T14:44:45.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
-            userReceive: {
-                idUser: 10,
-                lastname: "Houpin",
-                firstname: "Armand",
-            },
+            userSend: Pierre,
+            userReceive: Armand,
             content: "du surf avec des potes",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-16T14:44:36.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
-            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userSend: Armand,
+            userReceive: Pierre,
             content: "tu fais quoi ce week-end ?",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-16T14:44:21.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
-            userReceive: {
-                idUser: 10,
-                lastname: "Houpin",
-                firstname: "Armand",
-            },
+            userSend: Pierre,
+            userReceive: Armand,
             content: "salut Jean-Last",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2022-11-16T14:43:36.001Z",
+            params: {},
         },
         {
-            userSend: { idUser: 10, lastname: "Houpin", firstname: "Armand" },
-            userReceive: { idUser: 12, lastname: "Colin", firstname: "Pierre" },
+            userSend: Armand,
+            userReceive: Pierre,
             content: "bonjour Jaqueline",
             pathMediaMess: null,
             responseMess: null,
             view: true,
             publishDate: "2021-10-24T11:51:31.001Z",
+            params: {},
         },
     ];
-    let messageClicked: Array<Boolean> = new Array(messages.length).fill(false);
 
     function isUserFromNextMessageSame(
         msgs: Array<Message>,
@@ -319,28 +344,46 @@
         });
     }
 
+    function clickMessage(index: number) {
+        if (messages[index].params?.messageClicked)
+            messages[index].params.messageClicked =
+                !messages[index].params.messageClicked;
+        else messages[index].params.messageClicked = true;
+    }
+
+    function clickProfil(index: number) {
+        if (messages[index].params?.profilClicked) {
+            messages[index].params.copy = true;
+            navigator.clipboard.writeText(messages[index].userSend.pseudo);
+            setTimeout(() => {
+                messages[index].params.copy = false;
+            }, 1500);
+        } else {
+            messages[index].params.profilClicked = true;
+        }
+    }
+
+    function mouseMoveValue(event: MouseEvent) {
+        return {
+            x: event.clientX,
+            y: event.clientY,
+        };
+    }
+
     function addMessage() {
         // console.log(DateTime.now().toSQL());
         if (textValue.trim() !== "") {
             let newMessage: Message = {
-                userSend: {
-                    idUser: currentUser.idUser,
-                    lastname: currentUser.lastname,
-                    firstname: currentUser.firstname,
-                },
-                userReceive: {
-                    idUser: 10,
-                    lastname: "Houpin",
-                    firstname: "Armand",
-                },
+                userSend: currentUser,
+                userReceive: Armand,
                 content: textValue.trim(),
                 pathMediaMess: null,
                 responseMess: null,
                 view: true,
                 publishDate: DateTime.now().toISO(),
+                params: {},
             };
             messages = [newMessage, ...messages];
-            messageClicked = [false, ...messageClicked];
             textValue = ``;
         }
     }
@@ -378,7 +421,7 @@
             on:scroll={() => (y = Math.abs(chat.scrollTop))}
         >
             {#each messages as message, i}
-                {#key i !== 0 || message}
+                {#key i !== 0 || message.publishDate}
                     <div class="w-full flex flex-col">
                         {@html displayDate(i, message)}
                         <div
@@ -402,22 +445,45 @@
                                 <div class="flex">
                                     {#if message.userSend.idUser !== currentUser.idUser}
                                         {#if isAloneMessage(messages, i) || isFirstMessage(messages, i)}
-                                            <img
-                                                src={Utils.imageUser(
-                                                    message.userSend
-                                                )}
-                                                alt="user profil pic"
-                                                class="userPP border select-none"
-                                                style="border-color: #{Utils.stringToColour(
-                                                    Utils.formatUser(
-                                                        message.userSend
-                                                    )
-                                                )}"
-                                                on:click={() => console.log("user profil")}
-                                                on:keydown={() => console.log("user profil")}
-                                            />
+                                            <div
+                                                class="userPP"
+                                                on:click={() => clickProfil(i)}
+                                                on:keydown={() =>
+                                                    clickProfil(i)}
+                                                on:mousemove={(e) =>
+                                                    (message.params.positionPopup =
+                                                        mouseMoveValue(e))}
+                                                on:mouseleave={() =>
+                                                    (message.params.profilClicked = false)}
+                                            >
+                                                <img
+                                                    src={message.params.copy
+                                                        ? "images/clipboard.png"
+                                                        : Utils.imageUser(
+                                                              message.userSend
+                                                          )}
+                                                    alt="user profil pic"
+                                                    class="border select-none"
+                                                    style="border-color: #{Utils.stringToColour(
+                                                        Utils.formatUser(
+                                                            message.userSend
+                                                        )
+                                                    )}"
+                                                />
+                                                {#if message.params?.profilClicked}
+                                                    <ModaleUserProfil
+                                                        user={message.userSend}
+                                                        position={message.params
+                                                            .positionPopup}
+                                                        copy={message.params
+                                                            .copy}
+                                                        chatY={chat.getBoundingClientRect()
+                                                            .top}
+                                                    />
+                                                {/if}
+                                            </div>
                                         {:else}
-                                            <div class="userPP" />
+                                            <div class="userPP empty" />
                                         {/if}
                                     {/if}
                                     <p
@@ -442,17 +508,13 @@
                                             ? 'messMeBG messMe'
                                             : 'messOtherBG messOther'}
                                 flex whitespace-pre-line shrink w-fit py-2 px-3 text-base"
-                                        on:click={() =>
-                                            (messageClicked[i] =
-                                                !messageClicked[i])}
-                                        on:keydown={() =>
-                                            (messageClicked[i] =
-                                                !messageClicked[i])}
+                                        on:click={() => clickMessage(i)}
+                                        on:keydown={() => clickMessage(i)}
                                     >
                                         {message.content}
                                     </p>
                                 </div>
-                                {#if messageClicked[i]}
+                                {#if message.params?.messageClicked}
                                     <div
                                         class="{message.userSend.idUser ===
                                         currentUser.idUser
@@ -580,10 +642,19 @@
     }
 
     .userPP {
-        min-width: 30px;
-        max-height: 30px;
-        border-radius: 50%;
-        margin: auto 5px;
+        padding: 5px;
+
+        &.empty {
+            margin: 5px;
+            min-width: 30px;
+            max-height: 30px;
+        }
+
+        img {
+            border-radius: 50%;
+            min-width: 30px;
+            max-height: 30px;
+        }
     }
 
     .ctnMyMess {
