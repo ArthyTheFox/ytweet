@@ -1,12 +1,14 @@
 <script lang="ts">
     import { DateTime } from "luxon";
     import Utils from "../../script/utils";
-    import type { Message, UserMessage } from "../types";
+    import type { Message, Position, UserMessage } from "../types";
     import ripple from "../../script/ripple";
     import { fly, slide } from "svelte/transition";
     import { quintOut, quintIn, quadOut } from "svelte/easing";
     import TextAreaAutosizeChat from "./TextAreaAutosizeChat.svelte";
     import ModaleUserProfil from "./ModaleUserProfil.svelte";
+    import ModaleMessageMenu from "./ModaleMessageMenu.svelte";
+    import { clickOutside } from "../../script/clickOutside";
 
     let currentUser: UserMessage = {
         idUser: 12,
@@ -57,8 +59,16 @@
     let y: number = 0;
     let chat: HTMLElement;
     let textValue = ``;
+    let selectedMessage: number | null = null;
+    let visibleMessageMenu: boolean = false;
+    let menuPosition: Position = {
+        x: 0,
+        y: 0,
+    }
+    
     let messages: Array<Message> = [
         {
+            id: 0,
             userSend: Didier,
             userReceive: Armand,
             content: "du surf ?",
@@ -69,6 +79,7 @@
             params: {},
         },
         {
+            id: 1,
             userSend: Pierre,
             userReceive: Armand,
             content: "yo on fait quoi ?",
@@ -79,6 +90,7 @@
             params: {},
         },
         {
+            id: 2,
             userSend: Pierre,
             userReceive: Armand,
             content: "ouais ouais ouais",
@@ -89,6 +101,7 @@
             params: {},
         },
         {
+            id: 3,
             userSend: Armand,
             userReceive: Pierre,
             content: "petit bonjour du lendemain",
@@ -99,6 +112,7 @@
             params: {},
         },
         {
+            id: 4,
             userSend: Armand,
             userReceive: Pierre,
             content: "test triple message",
@@ -109,6 +123,7 @@
             params: {},
         },
         {
+            id: 5,
             userSend: Armand,
             userReceive: Pierre,
             content: `j'écris un pavé de texte pour tester l'alignement et le bon retour à la ligne du texte d'un message d'un utilisateur`,
@@ -119,16 +134,18 @@
             params: {},
         },
         {
+            id: 6,
             userSend: Armand,
             userReceive: Pierre,
             content: "je vais voir mes parents",
             pathMediaMess: null,
-            responseMess: null,
+            responseMess: 11,
             view: true,
             publishDate: "2022-11-16T14:45:02.001Z",
             params: {},
         },
         {
+            id: 7,
             userSend: Pierre,
             userReceive: Armand,
             content: "et toi ?",
@@ -139,6 +156,7 @@
             params: {},
         },
         {
+            id: 8,
             userSend: Pierre,
             userReceive: Armand,
             content: "et on va faire du camping",
@@ -149,6 +167,7 @@
             params: {},
         },
         {
+            id: 9,
             userSend: Pierre,
             userReceive: Armand,
             content: "du surf avec des potes",
@@ -159,6 +178,7 @@
             params: {},
         },
         {
+            id: 10,
             userSend: Armand,
             userReceive: Pierre,
             content: "tu fais quoi ce week-end ?",
@@ -169,6 +189,7 @@
             params: {},
         },
         {
+            id: 11,
             userSend: Pierre,
             userReceive: Armand,
             content: "salut Jean-Last",
@@ -179,6 +200,7 @@
             params: {},
         },
         {
+            id: 12,
             userSend: Armand,
             userReceive: Pierre,
             content: "bonjour Jaqueline",
@@ -336,7 +358,14 @@
         </p>`;
     }
 
-    function scrollTo(toTop: boolean) {
+    function scrollTo(msgId: number) {
+        let msgElem = document.getElementById(String(msgId));
+        msgElem.scrollIntoView({
+            behavior: "smooth",
+        });
+    }
+
+    function scrollToTop(toTop: boolean) {
         chat.scrollBy({
             top: toTop ? -chat.offsetHeight : chat.offsetHeight,
             left: 0,
@@ -344,12 +373,50 @@
         });
     }
 
-    function clickMessage(index: number) {
+    function displayMessageDetail(index: number) {
         if (messages[index].params?.messageClicked)
             messages[index].params.messageClicked =
                 !messages[index].params.messageClicked;
         else messages[index].params.messageClicked = true;
     }
+
+    function DisplayMessageMenu(value?: boolean) {
+        if (value === null || value === undefined) visibleMessageMenu = !visibleMessageMenu;
+        visibleMessageMenu = value;
+    }
+
+    function displayContentMessage(msgId: number) {
+        let mes = messages.find((m) => m.id === msgId);
+        console.log(mes.content)
+        return '<b>@' + mes.userSend.pseudo + '</b> ' + mes.content;
+    }
+
+    function clickMessage(e: MouseEvent, i: number) {
+        e.preventDefault();
+        switch (e.button) {
+            case 0: //Left button clicked
+                DisplayMessageMenu(false);
+                displayMessageDetail(i)
+                break;
+            case 1: //Middle button clicked
+                DisplayMessageMenu(false);
+                break;
+            case 2: //Right button clicked
+                console.log("Right button clicked")
+                menuPosition.x = e.clientX;
+                menuPosition.y = e.clientY;
+                DisplayMessageMenu(true);
+                break;
+        }
+    }
+
+    function handleClickOutside(event) {
+        if (visibleMessageMenu) {
+            console.log("outside")
+            DisplayMessageMenu(false);
+        }
+		// alert('Click outside!');
+	}
 
     function clickProfil(index: number) {
         if (messages[index].params?.profilClicked) {
@@ -371,14 +438,14 @@
     }
 
     function addMessage() {
-        // console.log(DateTime.now().toSQL());
         if (textValue.trim() !== "") {
             let newMessage: Message = {
+                id: messages[0].id + 1,
                 userSend: currentUser,
                 userReceive: Armand,
                 content: textValue.trim(),
                 pathMediaMess: null,
-                responseMess: null,
+                responseMess: selectedMessage,
                 view: true,
                 publishDate: DateTime.now().toISO(),
                 params: {},
@@ -409,8 +476,8 @@
                 }}
                 use:ripple={{ opacity: "0.2", color: "#fff" }}
                 class="absolute top-[3%] arrow-button"
-                on:click={() => scrollTo(true)}
-                on:keydown={() => scrollTo(true)}
+                on:click={() => scrollToTop(true)}
+                on:keydown={() => scrollToTop(true)}
             >
                 <ion-icon name="arrow-up-outline" />
             </div>
@@ -422,7 +489,7 @@
         >
             {#each messages as message, i}
                 {#key i !== 0 || message.publishDate}
-                    <div class="w-full flex flex-col">
+                    <div id={String(message.id)} class="w-full flex flex-col">
                         {@html displayDate(i, message)}
                         <div
                             class="{message.userSend.idUser ===
@@ -442,6 +509,19 @@
                                 )}
                                 class="flex flex-col my-0.5"
                             >
+                            {#if message.responseMess}
+                                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                <div class="flex cursor-pointer opacity-70 {message.userSend.idUser ===
+                                    currentUser.idUser ? 'flex-row-reverse' : 'flex-row'}"
+                                    on:click={() => scrollTo(message.responseMess)}>
+                                    <div class="w-[30px] mx-[5px] flex justify-center items-center">
+                                        <ion-icon name="arrow-redo-outline" />
+                                    </div>
+                                    <div class="flex flex-1">
+                                        <p class="cursor-pointer line-clamp-1" >{@html displayContentMessage(message.responseMess)}</p>
+                                    </div>
+                                </div>
+                            {/if}
                                 <div class="flex">
                                     {#if message.userSend.idUser !== currentUser.idUser}
                                         {#if isAloneMessage(messages, i) || isFirstMessage(messages, i)}
@@ -486,6 +566,7 @@
                                             <div class="userPP empty" />
                                         {/if}
                                     {/if}
+                                    <!-- svelte-ignore a11y-click-events-have-key-events -->
                                     <p
                                         class:aloneMess={isAloneMessage(
                                             messages,
@@ -508,8 +589,10 @@
                                             ? 'messMeBG messMe'
                                             : 'messOtherBG messOther'}
                                 flex whitespace-pre-line shrink w-fit py-2 px-3 text-base"
-                                        on:click={() => clickMessage(i)}
-                                        on:keydown={() => clickMessage(i)}
+                                        on:click={(e) => clickMessage(e, i)}
+                                        on:contextmenu={(e) => clickMessage(e, i)}
+                                        on:blur={(e) => DisplayMessageMenu(false)}
+                                        use:clickOutside on:click_outside={handleClickOutside}
                                     >
                                         {message.content}
                                     </p>
@@ -539,6 +622,9 @@
                     </div>
                 {/key}
             {/each}
+            {#if visibleMessageMenu}
+                <ModaleMessageMenu position={menuPosition} selectedMessage={messages.find(m => m.id === selectedMessage)} />
+            {/if}
         </div>
         {#if y > 100}
             <div
@@ -556,8 +642,8 @@
                 }}
                 class="absolute bottom-[3%] arrow-button"
                 use:ripple={{ opacity: "0.2", color: "#fff" }}
-                on:click={() => scrollTo(false)}
-                on:keydown={() => scrollTo(false)}
+                on:click={() => scrollToTop(false)}
+                on:keydown={() => scrollToTop(false)}
             >
                 <ion-icon name="arrow-down-outline" />
             </div>
