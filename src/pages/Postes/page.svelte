@@ -1,13 +1,26 @@
 <script lang="ts">
+    import Router, {location, link} from 'svelte-spa-router';
     import Nav from "../Partials/Nav/page.svelte";
     import Categorie from "../Partials/Categorie/page.svelte";
     import ListePostes from "./Partials/ListePostes.svelte";
     import AddPoste from "./Partials/AddPoste.svelte";
 
     let addShow: boolean = false;
+    let dialogAdd: boolean = false;
+    let testAdd;
 
     function updateAddShow() {
-        addShow = !addShow
+        addShow = !addShow;
+    }
+
+    function addShowDialog(data:any) {
+        addShow = !addShow;
+        testAdd(data.detail)
+        dialogAdd = true;
+
+        setTimeout(() => {
+            dialogAdd = false
+        }, 1500)
     }
 </script>
 
@@ -18,15 +31,23 @@
         >
             <button
                 type="button"
-                class="z-[99] rounded-full bg-main shadow-lg w-12 h-12 hover:bg-extra text-white flex justify-center items-center duration-300"
+                class="z-50 rounded-full bg-main shadow-lg w-12 h-12 hover:bg-extra text-white flex justify-center items-center duration-300"
                 on:click={() => (addShow = !addShow)}
             >
-            <ion-icon name="add-outline"></ion-icon>
+                <ion-icon name="add-outline" />
             </button>
         </div>
     {/if}
+
+    {#if dialogAdd}
+        <div
+            class="absolute top-4 right-4 py-2 px-4 text-white bg-green-500 rounded-md"
+        >
+            Poste ajouté
+        </div>
+    {/if}
     <Nav />
-    <ListePostes />
+    <ListePostes bind:addPost={testAdd}/>
     <Categorie />
-    <AddPoste {addShow} on:quit={updateAddShow}/>
+    <AddPoste {addShow} on:quit={updateAddShow} on:add={addShowDialog}/>
 </div>

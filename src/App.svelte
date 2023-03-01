@@ -4,7 +4,8 @@
 	import NotFound from "./pages/pageNotFound.svelte";
 	import Postes from "./pages/Postes/page.svelte";
 	import Poste from "./pages/Poste/page.svelte";
-	import Router, { link, location, push } from "svelte-spa-router";
+	import Message from './pages/Messages/page.svelte';
+	import Router from "svelte-spa-router";
 	import { Islogged } from "./store/store";
 	import MyStore from "./store";
 
@@ -14,6 +15,7 @@
 		"/auth": AuthPage,
 		"/": Postes,
 		"/:iduser/poste/:idposte": Poste,
+		"/message": Message,
 		"*": NotFound,
 	};
 </script>

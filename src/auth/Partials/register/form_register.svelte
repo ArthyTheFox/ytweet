@@ -5,7 +5,7 @@
     //import { Islogged } from "../../../store/store";
     import { fade } from "svelte/transition";
 
-    let pseudo, lastname, email, password, firstname, birthday, idFaculty = '';
+    let pseudo: any, lastname: any, email: any, password: any, firstname: any, birthday: any, idFaculty: any = '';
 
     $: submit = async () => {
         MyStore.dispatch("auth/register", {pseudo, lastname, firstname ,email, birthday, password, idFaculty}).then(
@@ -50,7 +50,7 @@
                             type="text"
                             bind:value={firstname}
                             placeholder="Prénom"
-                            required
+                            
                         />
                     </div>
                     <div class="w-[6%] group" />
@@ -60,7 +60,7 @@
                             type="text"
                             bind:value={lastname}
                             placeholder="Nom"
-                            required
+                            
                         />
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                             class="bg-main w-full text-sm text-white rounded-r-xl flex flex-row pt-3 pb-3 pl-3 pr-4 h-[44px] drop-shadow-sm hover:outline-none hover:ring-extra/75 focus:outline-none hover:ring focus:ring focus:ring-extra focus:border-none"
                             type="date"
                             bind:value={birthday}
-                            required
+                            
                         />
                     </div>
                 </div>
@@ -124,7 +124,7 @@
                         <select
                             class="bg-main w-full text-sm text-white rounded-xl flex flex-row pt-3 pb-3 pl-3 pr-4 drop-shadow-sm hover:outline-none hover:ring-extra/75 focus:outline-none hover:ring focus:ring focus:ring-extra focus:border-none"
                             bind:value={idFaculty}
-                            required
+                            
                         >
                             <option value="" disabled selected>Filière</option>
                             <option value="1">filiere 1</option>

@@ -17,6 +17,8 @@ module.exports = {
       pink: colors.fuchsia,
       red: colors.red,
       gray: colors.gray,
+      sky: colors.sky,
+      neutral: colors.neutral,
       'main': '#25232e',
       'main-fonce': '#191820',
       'extra': '#23b2a4'

@@ -15,11 +15,11 @@
     };
 
 
-    // onMount(() => {
-    //     if (!$Islogged) {
-    //         push("/auth");
-    //     }
-    // });
+    onMount(() => {
+        if (!$Islogged) {
+            push("/auth");
+        }
+    });
 </script>
 
 <div class="w-3/12 h-screen text-white">
@@ -31,7 +31,7 @@
     <div class="h-[73%] flex flex-col p-6">
         <div class="w-4/5 my-1">
             <a
-                class="px-6 py-2 hover:bg-extra/20 block rounded-3xl text-[1rem] flex flex-row items-center"
+                class="px-6 py-2 hover:bg-extra/20 rounded-3xl text-[1rem] flex flex-row items-center"
                 href="#"
             >
                 <ion-icon class="mr-4" name="home-outline" />
@@ -40,7 +40,7 @@
         </div>
         <div class="w-4/5 my-1">
             <a
-                class="px-6 py-2 hover:bg-extra/20 block rounded-3xl text-[1rem] flex flex-row items-center"
+                class="px-6 py-2 hover:bg-extra/20 rounded-3xl text-[1rem] flex flex-row items-center"
                 href="#"
             >
                 <ion-icon class="mr-4" name="paper-plane-outline" />
@@ -49,8 +49,8 @@
         </div>
         <div class="w-4/5 my-1">
             <a
-                class="px-6 py-2 hover:bg-extra/20 block rounded-3xl text-[1rem] flex flex-row items-center"
-                href="#"
+                class="px-6 py-2 hover:bg-extra/20 flex rounded-3xl text-[1rem] flex-row items-center"
+                href="#/message"
             >
                 <ion-icon class="mr-4" name="chatbubbles-outline" />
                 Messages
@@ -58,7 +58,7 @@
         </div>
         <div class="w-4/5 my-1">
             <a
-                class="px-6 py-2 hover:bg-extra/20 block rounded-3xl text-[1rem] flex flex-row items-center"
+                class="px-6 py-2 hover:bg-extra/20 block rounded-3xl text-[1rem] flex-row items-center"
                 href="#"
             >
                 <ion-icon class="mr-4" name="person-outline" />
@@ -82,14 +82,14 @@
                     {MyStore.state.auth.user.firstname}
                 </div>
                 <div class="text-[0.75rem] text-gray-400">
-                    @{MyStore.state.auth.user.pseudo}
+                    @{MyStore.state.auth.user.username}
                 </div>
                 {/if}
             </div>
         </div>
-        <div class="w-4/5 my-1">
+        <div class="w-4/5 my-1 z-[99]">
             <a
-                class="px-6 py-2 hover:bg-red-500 block rounded-3xl text-[1rem] flex flex-row items-center"
+                class="px-6 py-2 hover:bg-red-500 rounded-3xl text-[1rem] flex flex-row items-center"
                 href="#"
                 on:click={logout}
             >

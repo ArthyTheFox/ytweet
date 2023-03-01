@@ -6,7 +6,7 @@
         const now: DateTime = DateTime.now();
         const date: DateTime = DateTime.fromISO(datePost);
         const diff: Duration = now.diff(date);
-        console.log(diff)
+        // console.log(diff)
         if (diff.as('days') > 0) {
             if (now.year !== date.year) return date.toFormat("d MMMM");
             return date.toFormat("d MMMM y");
