@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.s-ripple-container {
+    /* position: relative; */
+    overflow: hidden;
+}
+
+.s-ripple {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    width: 100px;
+    height: 100px;
+    margin-top: -50px;
+    margin-left: -50px;
+    transform: scale(0) translate(0, 0);
+}
