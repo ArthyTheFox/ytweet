@@ -3,13 +3,14 @@ axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
 axios.defaults.xsrfCookieName = "csrftoken"
 import MyStore from '../store';
 
-const API_URL = 'http://127.0.0.1:8000/api/post';
+const API_URL = `${import.meta.env.VITE_API_URL}post`;
 
 class Poste {
   static async postes() {
     try {
-      const { data } = await axios.get(`${API_URL}`)
-      console.log(data)
+      const { data } = await axios.get(`${API_URL}`, {params: {
+        idUserConnected: MyStore.state.auth.user.id
+      }})
       return data
     } catch (error) {
       console.log(error)

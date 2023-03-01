@@ -3,7 +3,7 @@ axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
 axios.defaults.xsrfCookieName = "csrftoken"
 import MyStore from '../store';
 
-const API_URL = 'http://127.0.0.1:8000/api/comment';
+const API_URL = `${import.meta.env.VITE_API_URL}comment`;
 
 class Comment {
   static async comments(idPost:number) {
