@@ -135,7 +135,7 @@
                     <div class=" border rounded-lg border-main">
                         <img
                             class="rounded-lg w-full"
-                            src="http://localhost:8000/media/{poste?.pathMedia}"
+                            src="http://162.19.33.222:1331/media/{poste?.pathMedia}"
                             alt="#"
                         />
                     </div>

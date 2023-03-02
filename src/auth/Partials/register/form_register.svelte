@@ -5,25 +5,78 @@
     //import { Islogged } from "../../../store/store";
     import { fade } from "svelte/transition";
 
-    let pseudo: any, lastname: any, email: any, password: any, firstname: any, birthday: any, idFaculty: any = '';
+    let load: boolean = false;
+
+    let pseudo: any,
+        lastname: any,
+        email: any,
+        password: any,
+        firstname: any,
+        birthday: any,
+        idFaculty: any = "";
 
     $: submit = async () => {
-        MyStore.dispatch("auth/register", {pseudo, lastname, firstname ,email, birthday, password, idFaculty}).then(
-        async () => {
-            //Islogged.set(true);
-            await push('/auth');
-        },
-        (error) => {
-        });
-    }
+        load = true;
+        MyStore.dispatch("auth/register", {
+            pseudo,
+            lastname,
+            firstname,
+            email,
+            birthday,
+            password,
+            idFaculty,
+        }).then(
+            async () => {
+                load = false;
+                await push("/auth");
+            },
+            (error) => {}
+        );
+    };
 </script>
 
-<div transition:fade class="absolute w-full h-screen flex flex-col justify-center items-center">
+    <!-- <svg
+        id="loading-spinner"
+        xmlns="http://www.w3.org/2000/svg"
+        width="48"
+        height="48"
+        viewBox="0 0 48 48"
+    >
+        <defs>
+            <linearGradient
+                id="spinner-gradient-a"
+                x1="49.892%"
+                x2="55.03%"
+                y1="58.241%"
+                y2="89.889%"
+            >
+                <stop offset="0%" />
+                <stop offset="22.44%" stop-opacity=".59" />
+                <stop offset="100%" stop-opacity="0" />
+            </linearGradient>
+        </defs>
+        <g fill="none" transform="translate(-8 -8)">
+            <path
+                d="M32,56 C18.745166,56 8,45.254834 8,32 C8,18.745166 18.745166,8 32,8 C45.254834,8 56,18.745166 56,32 C56,45.254834 45.254834,56 32,56 Z M32,52 C43.045695,52 52,43.045695 52,32 C52,20.954305 43.045695,12 32,12 C20.954305,12 12,20.954305 12,32 C12,43.045695 20.954305,52 32,52 Z"
+            />
+            <path
+                fill="url(#spinner-gradient-a)"
+                d="M56,32 C56,33.1045695 55.1045695,34 54,34 C52.8954305,34 52,33.1045695 52,32 C52,20.954305 43.045695,12 32,12 C20.954305,12 12,20.954305 12,32 C12,43.045695 20.954305,52 32,52 C33.1045695,52 34,52.8954305 34,54 C34,55.1045695 33.1045695,56 32,56 C18.745166,56 8,45.254834 8,32 C8,18.745166 18.745166,8 32,8 C45.254834,8 56,18.745166 56,32 Z"
+                transform="rotate(45 32 32)"
+            />
+        </g>
+    </svg> -->
+<div
+    transition:fade
+    class="absolute w-full h-screen flex flex-col justify-center items-center"
+>
     <div class="w-4/5 md:w-3/5">
         <h1 class="text-4xl">S'inscrire</h1>
         <div>
-            <form class="relative flex flex-col"
-            on:submit|preventDefault={submit}>
+            <form
+                class="relative flex flex-col"
+                on:submit|preventDefault={submit}
+            >
                 <div class="relative w-full mt-10">
                     <div class="w-full group">
                         <input
@@ -50,7 +103,6 @@
                             type="text"
                             bind:value={firstname}
                             placeholder="Prénom"
-                            
                         />
                     </div>
                     <div class="w-[6%] group" />
@@ -60,7 +112,6 @@
                             type="text"
                             bind:value={lastname}
                             placeholder="Nom"
-                            
                         />
                     </div>
                 </div>
@@ -115,7 +166,6 @@
                             class="bg-main w-full text-sm text-white rounded-r-xl flex flex-row pt-3 pb-3 pl-3 pr-4 h-[44px] drop-shadow-sm hover:outline-none hover:ring-extra/75 focus:outline-none hover:ring focus:ring focus:ring-extra focus:border-none"
                             type="date"
                             bind:value={birthday}
-                            
                         />
                     </div>
                 </div>
@@ -124,7 +174,6 @@
                         <select
                             class="bg-main w-full text-sm text-white rounded-xl flex flex-row pt-3 pb-3 pl-3 pr-4 drop-shadow-sm hover:outline-none hover:ring-extra/75 focus:outline-none hover:ring focus:ring focus:ring-extra focus:border-none"
                             bind:value={idFaculty}
-                            
                         >
                             <option value="" disabled selected>Filière</option>
                             <option value="1">filiere 1</option>

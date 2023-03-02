@@ -4,7 +4,7 @@
     import MyStore from "../../../store";
     import { Islogged } from "../../../store/store";
 
-    $: logout = async () => {
+    $: logout = () => {
         MyStore.dispatch("auth/logout").then(
             async () => {
                 Islogged.set(false);
@@ -88,14 +88,14 @@
             </div>
         </div>
         <div class="w-4/5 my-1 z-[99]">
-            <a
+            <button
                 class="px-6 py-2 hover:bg-red-500 rounded-3xl text-[1rem] flex flex-row items-center"
                 href="#"
                 on:click={logout}
             >
                 <ion-icon class="mr-4" name="log-out-outline" />
                 Déconnexion
-            </a>
+        </button>
         </div>
     </div>
 </div>
