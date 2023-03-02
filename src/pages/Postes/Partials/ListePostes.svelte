@@ -102,7 +102,7 @@
                         <div class="mr-8 border rounded-lg border-main">
                             <img
                                 class="rounded-lg"
-                                src="http://localhost:8000/media/{poste.pathMedia}"
+                                src="http://162.19.33.222:1331/media/{poste.pathMedia}"
                                 alt="#"
                             />
                         </div>
