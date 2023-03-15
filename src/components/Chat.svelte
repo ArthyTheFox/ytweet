@@ -456,7 +456,7 @@
     }
 </script>
 
-<div class="relative flex h-full w-full flex-col">
+<div class="relative flex h-full w-9/12 flex-col border-l border-main">
     <div
         class="relative flex h-[calc(100%-50px)] w-full justify-center text-white"
     >
