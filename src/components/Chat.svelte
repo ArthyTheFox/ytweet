@@ -387,7 +387,6 @@
 
     function displayContentMessage(msgId: number) {
         let mes = messages.find((m) => m.id === msgId);
-        console.log(mes.content)
         return '<b>@' + mes.userSend.pseudo + '</b> ' + mes.content;
     }
 
@@ -403,6 +402,7 @@
                 break;
             case 2: //Right button clicked
                 console.log("Right button clicked")
+                selectedMessage = i;
                 menuPosition.x = e.clientX;
                 menuPosition.y = e.clientY;
                 DisplayMessageMenu(true);
@@ -592,7 +592,6 @@
                                         on:click={(e) => clickMessage(e, i)}
                                         on:contextmenu={(e) => clickMessage(e, i)}
                                         on:blur={(e) => DisplayMessageMenu(false)}
-                                        use:clickOutside on:click_outside={handleClickOutside}
                                     >
                                         {message.content}
                                     </p>
@@ -623,7 +622,7 @@
                 {/key}
             {/each}
             {#if visibleMessageMenu}
-                <ModaleMessageMenu position={menuPosition} selectedMessage={messages.find(m => m.id === selectedMessage)} />
+                <ModaleMessageMenu on:clickOutside={handleClickOutside} position={menuPosition} selectedMessage={messages.find(m => m.id === selectedMessage)} />
             {/if}
         </div>
         {#if y > 100}

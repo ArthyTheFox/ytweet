@@ -1,12 +1,14 @@
 <script lang="ts">
-    import { afterUpdate, onMount } from "svelte";
+    import { afterUpdate, createEventDispatcher, onMount } from "svelte";
     import { quintOut } from "svelte/easing";
     import { fly, blur } from "svelte/transition";
-    import Utils from "../../script/utils";
+    import { clickOutside } from "../../script/clickOutside";
     import type { Position, Message } from "../types";
 
     export let selectedMessage: Message;
     export let position: Position;
+
+    const dispatch = createEventDispatcher();
 
     let toDown: boolean = false;
     let toLeft: boolean = false;
@@ -16,7 +18,8 @@
         x: tolerance,
         y: tolerance,
     };
-
+    // repondre
+    // supprimer son message
     afterUpdate(() => {
         let total = popup.offsetHeight + tolerance;
         // toDown = chatY + tolerance > position.y - total;
@@ -25,6 +28,7 @@
     });
 
     onMount(() => {
+        console.log(selectedMessage)
         let total = popup.offsetHeight + tolerance;
         // toDown = chatY + tolerance > position.y - total;
         if (!toDown) positionOffset.y = total;
@@ -34,6 +38,7 @@
 
 <div
     bind:this={popup}
+    use:clickOutside on:click_outside={() => dispatch('clickOutside')}
     transition:fly={{
         duration: 300,
         x: 100,
@@ -66,18 +71,11 @@
 
     p {
         color: #121212;
-
-        span {
-            margin-left: 0.6rem;
-        }
     }
 
     .name {
         font-size: 0.7rem;
         font-weight: bold;
-    }
-
-    .nickname {
-        font-size: 0.6rem;
+        background-color: blue;
     }
 </style>
