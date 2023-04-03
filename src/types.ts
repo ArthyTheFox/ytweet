@@ -22,11 +22,9 @@ export type UserMessage = {
 export type Message = {
     id: number;
     userSend: UserMessage;
-    userReceive: UserMessage;
     content: string;
     pathMediaMess: string | null;
     responseMess: number | null;
-    view: boolean;
     publishDate: string;
     params? :any;
 };
