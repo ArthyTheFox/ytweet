@@ -8,7 +8,6 @@
     import TextAreaAutosizeChat from "./TextAreaAutosizeChat.svelte";
     import ModaleUserProfil from "./ModaleUserProfil.svelte";
     import ModaleMessageMenu from "./ModaleMessageMenu.svelte";
-    import { clickOutside } from "../../script/clickOutside";
 
     let currentUser: UserMessage = {
         idUser: 12,
