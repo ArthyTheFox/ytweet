@@ -4,11 +4,13 @@
     import { onMount } from "svelte";
     import postesService from "../../../services/postes.service";
     import DatePost from "../Components/DatePost.svelte";
-    import Like from "../Components/like.svelte";
+    import Like from "../../../components/like.svelte";
     import EmojiPicker from "../../Postes/Components/EmojiPicker.svelte";
     import Comment from "../Components/Comment.svelte";
     import commentService from "../../../services/comments.service";
     import TextArea from "../Components/TextAreaResizeAuto.svelte";
+  import MenuPoste from "../../../components/menuPoste.svelte";
+  import { slide } from "svelte/transition";
 
     const dispatch = createEventDispatcher();
 
@@ -22,6 +24,7 @@
     onMount(async () => {
         // console.log(params.idposte);
         poste = await postesService.poste(idPoste);
+        console.log(poste)
         comments = await commentService.comments(idPoste);
     });
 
@@ -113,14 +116,7 @@
                     </div>
                 </div>
                 <div class="ml-1 flex justify-center items-center w-1/12 h-16">
-                    <div
-                        class="w-8 h-8 flex justify-center items-center rounded-full hover:bg-extra/50 cursor-pointer"
-                    >
-                        <ion-icon
-                            class="text-[1.2rem]"
-                            name="ellipsis-vertical-outline"
-                        />
-                    </div>
+                    <MenuPoste username={poste?.username}/>
                 </div>
             </div>
             <div class="flex flex-col py-4 px-4">
@@ -155,7 +151,7 @@
                                 class="text-[1.25rem]"
                                 name="chatbox-ellipses-outline"
                             />
-                            <span class="ml-2 mb-[3px] text-[0.8rem]">0</span>
+                            <span class="ml-2 mb-[3px] text-[0.8rem]" transition:slide>{poste?.nbreComment}</span>
                         </div>
                     </div>
                     <div
@@ -174,7 +170,7 @@
                     <div
                         class="w-1/3 flex justify-center items-center py-1 text-gray-200"
                     >
-                        <Like checked={false} like={0} />
+                        <Like isLike={poste?.isLike} like={poste?.nbreLike} idPost={idPoste} />
                     </div>
                 </div>
             </div>
@@ -201,10 +197,6 @@
                             />
                             <div class="text-white flex flex-row py-2 px-1">
                                 <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                <ion-icon
-                                    name="image-outline"
-                                    class="w-4 h-4 rounded-full hover:bg-extra/50 p-2 cursor-pointer "
-                                />
                                 <EmojiPicker on:change={onEmojiChange} />
                             </div>
                         </div>

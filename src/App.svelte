@@ -6,6 +6,7 @@
 	import Poste from "./pages/Poste/page.svelte";
 	import Message from './pages/Messages/page.svelte';
 	import Router from "svelte-spa-router";
+	import Profil from "./pages/Profil/page.svelte";
 	import { Islogged } from "./store/store";
 	import MyStore from "./store";
 
@@ -14,6 +15,7 @@
 	const routes = {
 		"/auth": AuthPage,
 		"/": Postes,
+		"/:user": Profil,
 		"/:iduser/poste/:idposte": Poste,
 		"/message": Message,
 		"*": NotFound,
