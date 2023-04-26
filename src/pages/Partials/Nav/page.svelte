@@ -16,12 +16,6 @@
     );
   };
 
-  onMount(() => {
-    if (!$Islogged) {
-      push("/auth");
-    }
-  });
-
   const handleAddShow = () => {
     dispatch("showAdd");
   }
