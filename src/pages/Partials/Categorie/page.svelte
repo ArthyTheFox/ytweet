@@ -19,10 +19,10 @@
 <div
   class="absolute {show
     ? 'left-0'
-    : 'left-full'} md:relative bg-[#121212] w-full md:w-3/12 md:flex flex-col h-screen text-white duration-300 ease-in-out"
+    : 'left-full md:left-0'} md:relative bg-[#121212] w-full md:w-3/12 flex flex-col h-screen text-white duration-300 ease-in-out"
 >
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div class="absolute top-7 right-7 text-xl border w-8 h-8 flex rounded  border-main hover:bg-extra justify-center items-center z-[1]" on:click={HandleMenuRight}>
+  <div class="md:hidden absolute top-7 right-7 text-xl border w-8 h-8 flex rounded  border-main hover:bg-extra justify-center items-center z-[1]" on:click={HandleMenuRight}>
     <ion-icon name="close-outline" />
   </div>
   <div class="w-full rounded-lg overflow-scroll-y h-full p-4">
