@@ -82,7 +82,7 @@
             </div>
           </div>
           <div class="ml-1 flex justify-center items-center w-1/12 h-16">
-            <Menu username={poste.username} />
+            <Menu username={poste.username} idUser={poste.userId} />
           </div>
         </div>
         <div class="ml-16 flex flex-col">

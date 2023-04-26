@@ -1,19 +1,31 @@
 <script lang="ts">
-  import { link } from "svelte-spa-router";
+  import { link, push } from "svelte-spa-router";
   import { clickOutside } from "../../script/clickOutside";
+  import Message from "../services/message.service";
+  import MyStore from "../store";
 
-export let username:string;
-let checkbox = false;
+  export let username: string;
+  export let idUser: number;
+  let checkbox = false;
+  let messagerService = Message;
 
-const openMenu = () => {
-  checkbox = true;
-};
+  const createConv = () => {
+    messagerService
+      .createConversation(MyStore.state.auth.user.id, idUser)
+      .then((r) => {
+        console.log(r);
+        push(`/message/${r.id_conversation}`);
+      })
+  };
 
-function closeMenu() {
-  checkbox = false;
-}
+  const openMenu = () => {
+    checkbox = true;
+  };
+
+  function closeMenu() {
+    checkbox = false;
+  }
 </script>
-
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
@@ -35,5 +47,11 @@ function closeMenu() {
     >
       Voir le profil
     </a>
+    <button
+      on:click={createConv}
+      class="p-2 w-full block hover:bg-extra cursor-pointer text-xs text-left"
+    >
+      Envoyer un message
+    </button>
   </div>
 </div>

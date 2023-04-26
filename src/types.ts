@@ -1,32 +1,25 @@
 export type User = {
-    idUser: number;
+    id: number;
     email: string;
-    pseudo: string;
+    username: string;
     lastname: string;
     firstname: string;
     password: string;
     birthday: Date;
-    pathPP: string | null;
-    faculty: Faculty;
-}
-
-export type UserMessage = {
-    idUser: number;
-    email: string;
-    pseudo: string;
-    lastname: string;
-    firstname: string;
-    faculty: Faculty;
+    description: string;
+    faculty?: Faculty;
 }
 
 export type Message = {
     id: number;
-    userSend: UserMessage;
+    id_User: number;
+    user?: User;
+    id_conversation: number;
     content: string;
     pathMediaMess: string | null;
     responseMess: number | null;
     publishDate: string;
-    params? :any;
+    params?: any;
 };
 
 export type Position = {

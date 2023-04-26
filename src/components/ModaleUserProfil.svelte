@@ -3,9 +3,9 @@
     import { quintOut } from "svelte/easing";
     import { fly, blur } from "svelte/transition";
     import Utils from "../../script/utils";
-    import type { UserMessage, Position } from "../types";
+    import type { User, Position } from "../types";
 
-    export let user: UserMessage;
+    export let user: User;
     export let position: Position;
     export let copy: boolean;
     export let chatY: number;
@@ -49,7 +49,7 @@
 >
     <p class="name">{user.firstname} {user.lastname}</p>
     <p class="nickname">
-        @{user.pseudo}
+        @{user.username}
         {#if copy}
             <span
                 transition:blur={{

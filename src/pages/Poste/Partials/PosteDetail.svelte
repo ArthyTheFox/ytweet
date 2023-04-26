@@ -116,7 +116,7 @@
                     </div>
                 </div>
                 <div class="ml-1 flex justify-center items-center w-1/12 h-16">
-                    <MenuPoste username={poste?.username}/>
+                    <MenuPoste username={poste?.username} idUser={poste?.userId}/>
                 </div>
             </div>
             <div class="flex flex-col py-4 px-4">

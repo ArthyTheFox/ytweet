@@ -15,9 +15,10 @@
 	const routes = {
 		"/auth": AuthPage,
 		"/": Postes,
+		"/message": Message,
+		"/message/:id": Message,
 		"/:user": Profil,
 		"/:iduser/poste/:idposte": Poste,
-		"/message": Message,
 		"*": NotFound,
 	};
 </script>
