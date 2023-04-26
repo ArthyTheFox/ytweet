@@ -32,19 +32,10 @@
         <div class="w-4/5 my-1">
             <a
                 class="px-6 py-2 hover:bg-extra/20 rounded-3xl text-[1rem] flex flex-row items-center"
-                href="#"
+                href="#/"
             >
                 <ion-icon class="mr-4" name="home-outline" />
                 Accueil
-            </a>
-        </div>
-        <div class="w-4/5 my-1">
-            <a
-                class="px-6 py-2 hover:bg-extra/20 rounded-3xl text-[1rem] flex flex-row items-center"
-                href="#"
-            >
-                <ion-icon class="mr-4" name="paper-plane-outline" />
-                Mes tweets
             </a>
         </div>
         <div class="w-4/5 my-1">
@@ -57,13 +48,15 @@
             </a>
         </div>
         <div class="w-4/5 my-1">
+            {#if $Islogged}
             <a
                 class="px-6 py-2 hover:bg-extra/20 block rounded-3xl text-[1rem] flex-row items-center"
-                href="#"
+                href="#/{MyStore.state.auth.user.username}"
             >
                 <ion-icon class="mr-4" name="person-outline" />
                 Profile
             </a>
+            {/if}
         </div>
     </div>
     <div class="h-[17%] flex flex-col px-6">
