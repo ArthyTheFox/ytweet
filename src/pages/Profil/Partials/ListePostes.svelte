@@ -38,6 +38,7 @@
 
   const myTweetHandle = async () => {
     load = true;
+    postes = [];
     myLike = false;
     myPoste = true;
     postes = await postesService.posteByUser(username);
@@ -46,6 +47,7 @@
 
   const myLikeHandle = async () => {
     load = true;
+    postes = [];
     myPoste = false;
     myLike = true;
     postes = await postesService.postByLiked(username);
@@ -62,9 +64,9 @@
   const updateProfil = async () => {
     let user = await userService.updateUser(descriptionInput);
     description = user.description;
-    
-    dialogUpdateProfil = false
-  }
+
+    dialogUpdateProfil = false;
+  };
 </script>
 
 {#if dialogUpdateProfil}
@@ -74,7 +76,7 @@
     on:click|self={dialogUpdateProfilHandle}
   >
     <div
-      class="relative w-1/3 h-fit bg-main rounded-lg border border-extra z-[99] overflow-hidden"
+      class="relative w-11/12 md:w-1/3 h-fit bg-main rounded-lg border border-extra z-[99] overflow-hidden"
     >
       <div class="flex flex-col border-b border-main">
         <div
@@ -96,8 +98,7 @@
         <div class="w-full flex justify-center items-center my-4">
           <button
             class="p-2 text-xs flex justify-center items-center rounded-lg bg-extra hover:bg-extra/50 cursor-pointer text-white"
-            on:click={updateProfil}
-            >Modifier</button
+            on:click={updateProfil}>Modifier</button
           >
         </div>
       </div>
@@ -105,7 +106,7 @@
   </div>
 {/if}
 
-<div class="w-6/12 relative h-screen border-x border-main">
+<div class="w-full md:w-6/12 relative h-screen md:border-x md:border-main">
   <div
     class="h-[10%] relative flex px-4 items-center uppercase text-white text-[1.75rem] font-bold shadow-nav"
   >
@@ -117,17 +118,17 @@
       <ion-icon name="arrow-back-outline" />
     </a>
   </div>
-  <div class="h-[90%] relative text-white overflow-y-scroll">
-    <div class="w-full flex flex-col py-2 px-4">
+  <div class="h-[90%] relative text-white overflow-y-scroll pb-[45px] md:pb-0">
+    <div class="w-full flex flex-col py-2 px-1 md:px-4">
       <div class="flex flex-row">
-        <div class="flex justify-center items-center w-1/12 h-16">
+        <div class="flex justify-center items-center w-2/12 md:w-1/12 h-16">
           <img
             class="w-12 h-12 rounded-full border-main"
             alt="user profile"
             src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
           />
         </div>
-        <div class="relative ml-1 pt-2 flex flex-row w-10/12 h-16">
+        <div class="relative ml-1 pt-2 flex flex-row w-8/12 md:w-10/12 h-16">
           <div class="flex flex-col">
             <div class="flex flex-row">
               {user?.firstname}
@@ -137,7 +138,7 @@
           </div>
         </div>
         {#if user?.id === MyStore.state.auth.user.id}
-          <div class="flex justify-center items-center w-1/12 h-16">
+          <div class="flex justify-center items-center w-2/12 h-16">
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
               class="p-2 text-xs flex justify-center items-center rounded-lg hover:bg-extra/50 cursor-pointer"
@@ -148,12 +149,12 @@
           </div>
         {/if}
       </div>
-      <div class="ml-16 flex flex-col">
+      <div class="ml-8 md:ml-16 flex flex-col">
         <div class="text-[0.75rem] text-gray-400">
           A rejoint Ytweet le {new Date(user?.created_at).toLocaleDateString()}
         </div>
       </div>
-      <div class="ml-16 mt-4 flex flex-col">
+      <div class="ml-8 md:ml-16 mt-4 flex flex-col">
         <div
           class="text-[0.75rem] {user?.description
             ? 'text-white'
@@ -166,7 +167,7 @@
           {/if}
         </div>
       </div>
-      <div class="ml-16 mt-4 mb-4 flex flex-col text-gray-400">
+      <div class="ml-8 md:ml-16 mt-4 mb-4 flex flex-col text-gray-400">
         <div class="text-[0.75rem] w-1/3">
           Postes : {user?.nbrPosts}
         </div>
@@ -179,8 +180,8 @@
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
         class="w-1/3 flex justify-center items-center p-4 hover:bg-extra/10 text-sm cursor-pointer {myPoste
-          ? 'border-b-4 border-extra'
-          : ''}"
+          ? 'border-b-4 border-extra text-white'
+          : 'text-gray-400'}"
         on:click|preventDefault={myTweetHandle}
       >
         {#if user?.id === MyStore.state.auth.user.id}
@@ -191,9 +192,9 @@
       </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
-        class="w-1/3 flex justify-center items-center p-4 text-gray-400 text-sm hover:bg-extra/10 cursor-pointer {myLike
-          ? 'border-b-4 border-extra'
-          : ''}"
+        class="w-1/3 flex justify-center items-center p-4 text-sm hover:bg-extra/10 cursor-pointer {myLike
+          ? 'border-b-4 border-extra text-white'
+          : 'text-gray-400'}"
         on:click|preventDefault={myLikeHandle}
       >
         {#if user?.id === MyStore.state.auth.user.id}
@@ -208,97 +209,103 @@
         <Load />
       </div>
     {:else}
-      {#each postes as poste}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <div
-          class="w-full flex flex-col border-b border-main py-2 px-4 hover:bg-extra/10 cursor-pointer"
-          on:click={() => PostesDetails(poste.username, poste.id)}
-        >
-          <div class="flex flex-row">
-            <div class="flex justify-center items-center w-1/12 h-16">
-              <img
-                class="w-12 h-12 rounded-full border-main"
-                alt="user profile"
-                src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
-              />
-            </div>
-            <div class="relative ml-1 pt-2 flex flex-row w-10/12 h-16">
-              <div class="flex flex-col">
-                <div class="flex flex-row">
-                  {poste.firstname}
-                  {poste.lastname}
-                  <div class="mx-2">
-                    <span class="text-[0.75rem] text-gray-400">-</span>
-                  </div>
-                  <div>
-                    <DatePost DatePost={poste.publishDate} />
-                  </div>
-                </div>
-                <span class="text-[0.75rem] text-gray-400"
-                  >@{poste.username}</span
-                >
-              </div>
-            </div>
-          </div>
-          <div class="ml-16 flex flex-col">
-            <div class="line-clamp-[10] whitespace-pre-line">
-              {poste.content}
-            </div>
-          </div>
-          {#if poste.pathMedia}
-            <div class="ml-16 mt-4 flex flex-col">
-              <div class="mr-8 border rounded-lg border-main">
+      {#key postes}
+        {#each postes as poste}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <div
+            class="w-full flex flex-col border-b border-main py-2 px-1 md:px-4 hover:bg-extra/10 cursor-pointer"
+            on:click={() => PostesDetails(poste.username, poste.id)}
+          >
+            <div class="flex flex-row">
+              <div
+                class="flex justify-center items-center w-2/12 md:w-1/12 h-16"
+              >
                 <img
-                  class="rounded-lg"
-                  src="http://162.19.33.222:1331/media/{poste.pathMedia}"
-                  alt="#"
+                  class="w-12 h-12 rounded-full border-main"
+                  alt="user profile"
+                  src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
                 />
               </div>
-            </div>
-          {/if}
-          <div class="ml-16 mt-4 flex flex-col">
-            <div class="mr-8 rounded-lg w-3/5 flex">
               <div
-                class="w-1/3 flex justify-center items-center py-1 text-gray-400"
+                class="relative ml-1 pt-2 flex flex-row w-10/12 md:w-11/12 h-16"
               >
-                <div
-                  class="flex justify-center items-center hover:text-extra cursor-pointer"
-                >
-                  <ion-icon
-                    class="text-[1.25rem]"
-                    name="chatbox-ellipses-outline"
-                  />
-                  <span class="ml-2 mb-[3px] text-[0.8rem]"
-                    >{poste.nbreComment}</span
+                <div class="flex flex-col">
+                  <div class="flex flex-row">
+                    {poste.firstname}
+                    {poste.lastname}
+                    <div class="mx-2">
+                      <span class="text-[0.75rem] text-gray-400">-</span>
+                    </div>
+                    <div>
+                      <DatePost DatePost={poste.publishDate} />
+                    </div>
+                  </div>
+                  <span class="text-[0.75rem] text-gray-400"
+                    >@{poste.username}</span
                   >
                 </div>
               </div>
-              <div
-                class="w-1/3 flex justify-center items-center py-1 text-gray-400"
-              >
-                <div
-                  class="flex justify-center items-center hover:text-green-500 cursor-pointer"
-                >
-                  <ion-icon
-                    class="text-[1.25rem]"
-                    name="return-down-forward-outline"
+            </div>
+            <div class="ml-8 md:ml-16 flex flex-col">
+              <div class="line-clamp-[10] whitespace-pre-line">
+                {poste.content}
+              </div>
+            </div>
+            {#if poste.pathMedia}
+              <div class="ml-8 md:ml-16 mt-4 flex flex-col">
+                <div class="mr-8 border rounded-lg border-main">
+                  <img
+                    class="rounded-lg"
+                    src="http://162.19.33.222:1331/media/{poste.pathMedia}"
+                    alt="#"
                   />
-                  <span class="ml-2 mb-[3px] text-[0.8rem]">0</span>
                 </div>
               </div>
-              <div
-                class="w-1/3 flex justify-center items-center py-1 text-gray-400"
-              >
-                <Like
-                  isLike={poste.isLike}
-                  like={poste.nbreLike}
-                  idPost={poste.id}
-                />
+            {/if}
+            <div class="ml-8 md:ml-16 mt-4 flex flex-col">
+              <div class="mr-8 rounded-lg w-full md:w-3/5 flex">
+                <div
+                  class="w-1/3 flex justify-center items-center py-1 text-gray-400"
+                >
+                  <div
+                    class="flex justify-center items-center hover:text-extra cursor-pointer"
+                  >
+                    <ion-icon
+                      class="text-[1.25rem]"
+                      name="chatbox-ellipses-outline"
+                    />
+                    <span class="ml-2 mb-[3px] text-[0.8rem]"
+                      >{poste.nbreComment}</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="w-1/3 flex justify-center items-center py-1 text-gray-400"
+                >
+                  <div
+                    class="flex justify-center items-center hover:text-green-500 cursor-pointer"
+                  >
+                    <ion-icon
+                      class="text-[1.25rem]"
+                      name="return-down-forward-outline"
+                    />
+                    <span class="ml-2 mb-[3px] text-[0.8rem]">0</span>
+                  </div>
+                </div>
+                <div
+                  class="w-1/3 flex justify-center items-center py-1 text-gray-400"
+                >
+                  <Like
+                    isLike={poste.isLike}
+                    like={poste.nbreLike}
+                    idPost={poste.id}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      {/each}
+        {/each}
+      {/key}
     {/if}
   </div>
 </div>
@@ -326,5 +333,9 @@
 
   :hover::-webkit-scrollbar-thumb {
     background: #23b2a4;
+  }
+
+  .shadow-nav {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   }
 </style>

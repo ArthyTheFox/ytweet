@@ -47,7 +47,7 @@
     };
 </script>
 
-<div class="w-6/12 relative h-screen border-x border-main group">
+<div class="w-full md:w-6/12 relative h-screen md:border-x md:border-main group">
     <!-- <div
         class="absolute bottom-4 left-1/2 -translate-x-6 bg-sky-500/50 shadow-lg w-12 h-12 hover:bg-sky-500 rounded-full z-50 cursor-pointer hidden group-hover:flex justify-center items-center"
         on:keypress={() => {
@@ -86,18 +86,18 @@
             <ion-icon name="arrow-back-outline" />
         </a>
     </div>
-    <div class="h-[90%] relative text-white overflow-y-scroll">
+    <div class="h-[90%] relative text-white overflow-y-scroll pb-[40px] md:pb-0">
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div class="w-full flex flex-col py-2">
             <div class="flex flex-row px-4">
-                <div class="flex justify-center items-center w-1/12 h-16">
+                <div class="flex justify-center items-center w-2/12 md:w-1/12 h-16">
                     <img
                         class="w-12 h-12 rounded-full border-main"
                         alt="user profile"
                         src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
                     />
                 </div>
-                <div class="ml-1 pt-2 flex w-10/12 h-16">
+                <div class="ml-1 pt-2 flex w-9/12 md:w-10/12 h-16">
                     <div class="flex flex-col">
                         <div class="flex flex-row">
                             {poste?.firstname} {poste?.lastname}
@@ -140,7 +140,7 @@
             <div
                 class="mt-4 flex flex-col justify-center items-center border-t border-main"
             >
-                <div class="mr-8 rounded-lg w-3/5 flex p-2">
+                <div class="mr-8 rounded-lg w-full md:w-3/5 flex p-2">
                     <div
                         class="w-1/3 flex justify-center items-center py-1 text-gray-200"
                     >
@@ -181,14 +181,14 @@
                     Répondre à {poste?.username}
                 </div>
                 <div class="flex flex-row">
-                    <div class="flex justify-center items-center w-1/12 h-16">
+                    <div class="flex justify-center items-center w-2/12 md:w-1/12 h-16">
                         <img
                             class="w-10 h-10 rounded-full border-main"
                             alt="user profile"
                             src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
                         />
                     </div>
-                    <div class="ml-1 flex w-10/12 mt-3">
+                    <div class="ml-1 flex w-9/12 md:w-10/12 mt-3">
                         <div class="flex flex-col w-full">
                             <TextArea
                                 bind:value={content}

@@ -24,12 +24,16 @@
             dialogAdd = false
         }, 1500)
     }
+
+    function handleAddShow() {
+        addShow = !addShow
+    }
 </script>
 
 <div class="w-full h-screen flex relative overflow-hidden">
     {#if !addShow}
         <div
-            class="absolute bottom-6 left-0 w-full flex justify-center items-center"
+            class="hidden absolute bottom-6 left-0 w-full md:flex justify-center items-center"
         >
             <button
                 type="button"
@@ -48,7 +52,7 @@
             Poste ajouté
         </div>
     {/if}
-    <Nav />
+    <Nav on:showAdd={handleAddShow}/>
     <ListePostes bind:addPost={testAdd} username={params.user}/>
     <Categorie />
     <AddPoste {addShow} on:quit={updateAddShow} on:add={addShowDialog}/>
