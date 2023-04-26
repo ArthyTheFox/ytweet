@@ -3,27 +3,24 @@
 	export let minRows = 1;
 	export let maxRows;
 	
+	// let minHeight =  `${1 + minRows * 1.2}em`
 	$: minHeight = `${1 + minRows * 1.2}em`;
 	$: maxHeight = maxRows ? `${1 + maxRows * 1.2}em` : `auto`;
 </script>
 
-<div class="containerPost">
+<div class="relative w-full md:w-[450px] h-fit text-white">
 	<pre
 		aria-hidden="true"
-		style="min-height: {minHeight}; max-height: {maxHeight}"
+		style="min-height: {minHeight};"
 	>{value + '\n'}</pre>
 
 	<textarea bind:value placeholder="Votre message" required></textarea>	
 </div>
 
 <style>
-	.containerPost {
-		position: relative;
-        width: 450px;
-	}
 	pre{
         color: transparent;
-        overflow: hidden;
+        /* overflow: hidden; */
     }
 	pre, textarea {
 		font-family: inherit;

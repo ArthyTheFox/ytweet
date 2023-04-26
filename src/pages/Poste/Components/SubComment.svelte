@@ -18,7 +18,7 @@
 
 <div class="flex flex-col hover:bg-extra/10 cursor-pointer">
     <div class="flex flex-row relative">
-        <div class="relative flex justify-center items-center w-1/12 h-16">
+        <div class="relative flex justify-center items-center w-2/12 md:w-1/12 h-16">
             <img
                 class="w-10 h-10 rounded-full border-main"
                 alt="user profile"
@@ -31,7 +31,7 @@
             />
             {/if}
         </div>
-        <div class="relative ml-1 pt-2 w-9/12">
+        <div class="relative ml-1 pt-2 w-10/12 md:w-11/12">
             <div class="flex flex-row items-center">
                 {firstname} {lastname}
                 <span class="ml-2 mt-[2px] text-[0.6rem] text-gray-400"

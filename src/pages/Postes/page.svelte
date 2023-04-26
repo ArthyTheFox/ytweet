@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Router, {location, link} from 'svelte-spa-router';
+    // import Router, {location, link} from 'svelte-spa-router';
     import Nav from "../Partials/Nav/page.svelte";
     import Categorie from "../Partials/Categorie/page.svelte";
     import ListePostes from "./Partials/ListePostes.svelte";
@@ -8,6 +8,8 @@
     let addShow: boolean = false;
     let dialogAdd: boolean = false;
     let testAdd;
+
+    let rightMenu: boolean = false;
 
     function updateAddShow() {
         addShow = !addShow;
@@ -22,12 +24,20 @@
             dialogAdd = false
         }, 1500)
     }
+
+    function handleRightMenu(data:any) {
+		rightMenu = !rightMenu
+	}
+
+    function handleAddShow() {
+        addShow = !addShow
+    }
 </script>
 
 <div class="w-full h-screen flex relative overflow-hidden">
     {#if !addShow}
         <div
-            class="absolute bottom-6 left-0 w-full flex justify-center items-center"
+            class="hidden absolute bottom-6 left-0 w-full md:flex justify-center items-center"
         >
             <button
                 type="button"
@@ -46,8 +56,8 @@
             Poste ajouté
         </div>
     {/if}
-    <Nav />
-    <ListePostes bind:addPost={testAdd}/>
-    <Categorie />
+    <Nav on:showAdd={handleAddShow}/>
+    <ListePostes bind:addPost={testAdd} on:menuRight={handleRightMenu}/>
+    <Categorie show={rightMenu} on:menuRight={handleRightMenu}/>
     <AddPoste {addShow} on:quit={updateAddShow} on:add={addShowDialog}/>
 </div>

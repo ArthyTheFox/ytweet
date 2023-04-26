@@ -57,7 +57,7 @@
 
 {#if addShow}
     <div
-        class="absolute right-0 top-0 w-[35rem] h-full bg-[#121212] border-l border-main shadow-3xl"
+        class="absolute right-0 top-0 w-full md:w-[35rem] h-full bg-[#121212] border-l border-main shadow-3xl"
         in:fly={{ duration: 250, x: 500, easing: sineOut }}
         out:fly={{ duration: 250, x: 500, easing: sineIn }}
     >
@@ -99,7 +99,7 @@
                                         <TextArea
                                             bind:value={content}
                                             minRows={1}
-                                            maxRows={40}
+                                            maxRows={5}
                                         />
                                     </div>
                                 </div>

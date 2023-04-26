@@ -54,7 +54,7 @@
         on:click|self={dialogAddSubCommentHandle}
     >
         <div
-            class="relative w-1/3 h-fit bg-main rounded-lg border border-extra z-[99]"
+            class="relative w-11/12 md:w-1/3 h-fit bg-main rounded-lg border border-extra z-[99]"
         >
             <div
                 class="absolute right-4 top-4 flex justify-center items-center"
@@ -66,9 +66,9 @@
                     <ion-icon name="paper-plane-outline" />
                 </div>
             </div>
-            <div class="flex flex-row px-4">
+            <div class="flex flex-row px-1 md:px-4">
                 <div
-                    class="relative flex justify-center items-center w-1/12 h-16"
+                    class="relative flex justify-center items-center w-2/12 md:w-1/12 h-16"
                 >
                     <img
                         class="w-8 h-8 rounded-full border-main"
@@ -128,7 +128,7 @@
 <div class="flex flex-col border-b border-main">
     <div class="flex flex-col hover:bg-extra/10 cursor-pointer">
         <div class="flex flex-row">
-            <div class="relative flex justify-center items-center w-1/12 h-16">
+            <div class="relative flex justify-center items-center w-2/12 md:w-1/12 h-16">
                 <img
                     class="w-10 h-10 rounded-full border-main"
                     alt="user profile"
@@ -141,7 +141,7 @@
                     />
                 {/if}
             </div>
-            <div class="relative ml-1 pt-2 w-10/12">
+            <div class="relative ml-1 pt-2 w-9/12 md:w-10/12">
                 <div class="flex flex-row items-center">
                     {firstname}
                     {lastname}
