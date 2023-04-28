@@ -5,19 +5,24 @@
   import Postes from "./pages/Postes/page.svelte";
   import Poste from "./pages/Poste/page.svelte";
   import Message from "./pages/Messages/page.svelte";
-  import Router from "svelte-spa-router";
+  import Router, { push, replace } from "svelte-spa-router";
   import Profil from "./pages/Profil/page.svelte";
-  import Test from './pages/Test/page.svelte';
   import { Islogged } from "./store/store";
   import MyStore from "./store";
+  import { onMount } from "svelte";
 
   Islogged.set(MyStore.state.auth.status.loggedIn);
 
+  onMount(() => {
+    if (!$Islogged) {
+      replace("/auth");
+    }
+  });
+
   const routes = {
     "/": Postes,
-    "/test": Test,
-    "/auth": AuthPage,
-    "/message": Message,
+	"/auth": AuthPage,
+	"/message": Message,
     "/:user": Profil,
     "/:iduser/poste/:idposte": Poste,
     "*": NotFound,
