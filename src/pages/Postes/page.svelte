@@ -5,17 +5,6 @@
   import ListePostes from "./Partials/ListePostes.svelte";
   import AddPoste from "./Partials/AddPoste.svelte";
 
-  import { onMount } from "svelte";
-  import { replace } from "svelte-spa-router";
-  import { Islogged } from "../../store/store";
-
-  onMount(() => {
-    if (!$Islogged) {
-      replace("/auth");
-    }
-  });
-
-
 
   let addShow: boolean = false;
   let dialogAdd: boolean = false;

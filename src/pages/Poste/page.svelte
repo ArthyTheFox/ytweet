@@ -3,17 +3,7 @@
   import Categorie from "../Partials/Categorie/page.svelte";
   import PosteDetail from "./Partials/PosteDetail.svelte";
   import AddComment from "./Partials/AddComment.svelte";
-
-  import { onMount } from "svelte";
-  import { replace } from "svelte-spa-router";
-  import { Islogged } from "../../store/store";
-
-  onMount(() => {
-    if (!$Islogged) {
-      replace("/auth");
-    }
-  });
-
+  
 
   export let params: any = {};
   let addShow: boolean = false;
