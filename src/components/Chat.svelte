@@ -48,6 +48,7 @@
         message.params = {};
         return message;
       });
+      messages = messages.reverse();
       load = false;
     });
   }
@@ -104,7 +105,8 @@
   }
 
   function isFirstMessage(msgs: Array<Message>, index: number): boolean {
-    if (index === msgs.length - 1 || isAloneMessage(msgs, index)) return false;
+    if (isAloneMessage(msgs, index)) return false;
+    if (index === msgs.length - 1) return true;
     return (
       !isUserFromLastMessageSame(msgs, index) ||
       !Utils.sameDateFromStr(
@@ -232,7 +234,7 @@
         break;
       case 2: //Right button clicked
         console.log("Right button clicked");
-        selectedMessage = i;
+        selectedMessage = messages[i].id;
         menuPosition.x = e.clientX;
         menuPosition.y = e.clientY;
         DisplayMessageMenu(true);

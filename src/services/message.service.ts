@@ -14,6 +14,15 @@ class MessageService {
     }
   }
 
+  static async deleteMessage(id_conversation: number, id_message: number) {
+    try {
+      const { data } = await axios.delete(`${API_URL}deleteMessages/${id_conversation}/${id_message}`)
+      return data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   static async createConversation(userSend: number, userReceive: number, titre: string = "") {
     try {
       const { data } = await axios.post(`${API_URL}createConversation`, {
