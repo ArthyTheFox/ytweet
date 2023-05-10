@@ -9,6 +9,7 @@
   import Load from "../../../components/load.svelte";
   import FollowService from "../../../services/follow.service";
   import Follow from "../../../components/Follow.svelte";
+  import Faculties from "../../../components/Faculties.svelte";
 
   let load: boolean = false;
   let postes: any = [];
@@ -141,7 +142,7 @@
           <img
             class="w-12 h-12 rounded-full border-main"
             alt="user profile"
-            src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
+            src={`https://ui-avatars.com/api/?name=${(user?.lastname).substring(0,1)}${(user?.firstname).substring(0,1)}&color=23b2a4&background=191820`}
           />
         </div>
         <div class="relative ml-1 pt-2 flex flex-row w-8/12 md:w-10/12 h-16">
@@ -260,7 +261,7 @@
                 <img
                   class="w-12 h-12 rounded-full border-main"
                   alt="user profile"
-                  src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
+                  src={`https://ui-avatars.com/api/?name=${(poste.lastname).substring(0,1)}${(poste.firstname).substring(0,1)}&color=23b2a4&background=191820`}
                 />
               </div>
               <div
@@ -299,6 +300,11 @@
                 </div>
               </div>
             {/if}
+            <div class="ml-8 md:ml-16 flex flex-col">
+              <div class="line-clamp-[10] whitespace-pre-line">
+                <Faculties faculties={poste.faculties} />
+              </div>
+            </div>
             <div class="ml-8 md:ml-16 mt-4 flex flex-col">
               <div class="mr-8 rounded-lg w-full md:w-3/5 flex">
                 <div
@@ -358,7 +364,7 @@
                 <img
                   class="w-12 h-12 rounded-full border-main"
                   alt="user profile"
-                  src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
+                  src={`https://ui-avatars.com/api/?name=${(follow.lastname).substring(0,1)}${(follow.firstname).substring(0,1)}&color=23b2a4&background=191820`}
                 />
               </div>
               <div

@@ -73,7 +73,7 @@
                     <img
                         class="w-8 h-8 rounded-full border-main"
                         alt="user profile"
-                        src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
+                        src={`https://ui-avatars.com/api/?name=${(lastname).substring(0,1)}${(firstname).substring(0,1)}&color=23b2a4&background=191820`}
                     />
                 </div>
                 <div class="relative ml-1 pt-2 w-10/12">
@@ -132,7 +132,7 @@
                 <img
                     class="w-10 h-10 rounded-full border-main"
                     alt="user profile"
-                    src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
+                    src={`https://ui-avatars.com/api/?name=${(lastname).substring(0,1)}${(firstname).substring(0,1)}&color=23b2a4&background=191820`}
                 />
                 {#if Sub.length !== 0}
                     <div

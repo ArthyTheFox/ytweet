@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { link, push } from "svelte-spa-router";
+  import { push } from "svelte-spa-router";
   import { onMount, createEventDispatcher } from "svelte";
   import postesService from "../../../services/postes.service";
   import DatePost from "../Components/DatePost.svelte";
@@ -8,18 +8,14 @@
   import Menu from "../../../components/menuPoste.svelte";
   import { slide } from "svelte/transition";
   import Load from "../../../components/load.svelte";
-  import Follow from "../../../components/Follow.svelte";
+  import Faculties from "../../../components/Faculties.svelte";
+  import { querystring } from "svelte-spa-router";
 
   let postes: any = [];
   let load: boolean = true;
   let searchInput: string = "";
   let messageSearch: string = "";
   const dispatch = createEventDispatcher();
-
-  onMount(async () => {
-    postes = await postesService.postes();
-    load = false;
-  });
 
   const PostesDetails = (name: String, idPoste: number) => {
     push(`/${name}/poste/${idPoste}`);
@@ -30,7 +26,7 @@
     if (searchInput.length > 0) {
       const data = await postesService.searchPost(searchInput);
       if (!data.message) {
-        messageSearch = null
+        messageSearch = null;
         postes = data;
         load = false;
       } else {
@@ -54,6 +50,25 @@
     data.lastname = MyStore.state.auth.user.lastname;
     postes = [data, ...postes];
   };
+
+  const getPostByFacultyHandle = async () => {
+    load = true;
+    postes = await postesService.getPostByFaculty($querystring);
+    load = false;
+  };
+
+  const getPostHandle = async () => {
+    load = true;
+    postes = await postesService.postes();
+    load = false;
+  }
+
+  $: if ($querystring) {
+    //watch the params.id for changes
+    getPostByFacultyHandle()
+  } else {
+    getPostHandle()
+  }
 </script>
 
 <div class="w-full md:w-6/12 relative h-screen md:border-x md:border-main">
@@ -109,7 +124,13 @@
               <img
                 class="w-12 h-12 shrink-0 rounded-full border-main"
                 alt="user profile"
-                src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
+                src={`https://ui-avatars.com/api/?name=${poste.lastname.substring(
+                  0,
+                  1
+                )}${poste.firstname.substring(
+                  0,
+                  1
+                )}&color=23b2a4&background=191820`}
               />
             </div>
             <div
@@ -131,7 +152,9 @@
                 >
               </div>
             </div>
-            <div class="flex flew-row gap-6 justify-center items-center w-1/12 md:w-1/12 h-16">
+            <div
+              class="flex flew-row gap-6 justify-center items-center w-1/12 md:w-1/12 h-16"
+            >
               <Menu username={poste.username} idUserFollow={poste.idUser} />
             </div>
           </div>
@@ -151,6 +174,11 @@
               </div>
             </div>
           {/if}
+          <div class="ml-8 md:ml-16 flex flex-col">
+            <div class="line-clamp-[10] whitespace-pre-line">
+              <Faculties faculties={poste.faculties} />
+            </div>
+          </div>
           <div class="ml-0 md:ml-16 mt-4 flex flex-col">
             <div class="mr-8 rounded-lg w-full md:w-3/5 flex">
               <div

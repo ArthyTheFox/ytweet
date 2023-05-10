@@ -119,6 +119,19 @@ class Poste {
     }
   }
 
+  static async getPostByFaculty(id) {
+    try {
+      const { data } = await axios.get(`${API_URL}/faculty/${id}`, {
+        params: {
+          idUserConnected: MyStore.state.auth.user.id
+        }
+      })
+      return data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 }
 
 export default Poste;

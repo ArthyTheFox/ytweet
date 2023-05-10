@@ -21,8 +21,8 @@
 
   const routes = {
     "/": Postes,
-	"/auth": AuthPage,
-	"/message": Message,
+    "/auth": AuthPage,
+    "/message": Message,
     "/:user": Profil,
     "/:iduser/poste/:idposte": Poste,
     "*": NotFound,
