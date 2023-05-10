@@ -3,22 +3,24 @@
   import Message from "../../components/Chat.svelte";
   import { params } from "svelte-spa-router";
   import { onMount } from "svelte";
+  import MessageService from "../../services/message.service";
+  import MyStore from "../../store";
 
   let isNotConv: boolean = false;
   let idConv: number = 0;
+  let messageService = MessageService;
 
-  let conversations: Array<any> = [
-    {
-      id: 1,
-      name: "pierre, armand",
-    },
-    {
-      id: 2,
-      name: "pierre, didier",
-    },
-  ];
+  let conversations: Array<any> = [];
+
+  const getConvs = () => {
+    messageService.getConversations(MyStore.state.auth.user.id).then((c) => {
+      console.log(c);
+      conversations = c;
+    });
+  };
 
   onMount(() => {
+    getConvs();
     params.subscribe((e) => {
       isNotConv = Boolean(e?.id);
       if (isNotConv) idConv = Number(e?.id);
@@ -29,7 +31,7 @@
 <div class="w-full h-screen flex relative overflow-hidden">
   <Nav />
   {#if isNotConv}
-    <Message idConv={idConv}/>
+    <Message {idConv} />
   {:else}
     <div class="h-full w-9/12 border-l border-main" />
   {/if}
@@ -42,9 +44,9 @@
         <a
           class="ctn-conversation"
           class:border-top={i !== 0}
-          href="#/message/{conversation.id}"
+          href="#/message/{conversation.id_conversation}"
         >
-          <p>{conversation.name}</p>
+          <p>{conversation.titre}</p>
         </a>
       {/each}
     </div>
@@ -54,16 +56,17 @@
 <style lang="scss">
   .ctn-conversation {
     display: flex;
-    height: 3rem;
     width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    padding: 0.5rem;
 
     &.border-top {
       border-top: 1px solid #25232e;
     }
 
     p {
+      text-align: start;
       color: white;
       width: fit-content;
       transition: all 0.4s cubic-bezier(0.37, 0, 0.63, 1);

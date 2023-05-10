@@ -49,6 +49,15 @@ class MessageService {
   //     console.log(error)
   //   }
   // }
+
+  static async getConversations(id: any) {
+    try {
+      const { data } = await axios.get(`${API_URL}getAllconversation/${id}`)
+      return data
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }
 
 export default MessageService;

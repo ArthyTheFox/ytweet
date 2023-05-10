@@ -24,15 +24,21 @@
     x: 0,
     y: 0,
   };
+  let load: boolean = false;
 
   let users: Array<User> = [];
   let messages: Array<Message> = [];
 
   onMount(() => {
-    getMessage();
+    if (!load) getMessage();
   });
 
+  $: if (idConv) {
+    getMessage();
+  }
+
   function getMessage() {
+    load = true;
     messageService.getMessages(idConv).then((data) => {
       console.log(data);
       messages = data.message;
@@ -42,6 +48,7 @@
         message.params = {};
         return message;
       });
+      load = false;
     });
   }
 
