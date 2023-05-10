@@ -27,7 +27,6 @@
                 pathMedia: pathMedia.files[0],
             })
             .then((data) => {
-                console.log(data)
                 if(data){
                     dispatch('add', data)
                 }

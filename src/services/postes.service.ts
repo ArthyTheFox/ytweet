@@ -21,7 +21,7 @@ class Poste {
 
   static async poste($idPoste: Number) {
     try {
-      const { data } = await axios.get(`${API_URL}/${$idPoste}`,{
+      const { data } = await axios.get(`${API_URL}/${$idPoste}`, {
         params: {
           idUserConnected: MyStore.state.auth.user.id
         }
@@ -35,7 +35,7 @@ class Poste {
 
   static async posteByUser(username: any) {
     try {
-      const { data } = await axios.get(`${API_URL}/user/${username}`,{
+      const { data } = await axios.get(`${API_URL}/user/${username}`, {
         params: {
           idUserConnected: MyStore.state.auth.user.id
         }
@@ -49,7 +49,7 @@ class Poste {
 
   static async postByLiked(username: any) {
     try {
-      const { data } = await axios.get(`${API_URL}/user/${username}/like`,{
+      const { data } = await axios.get(`${API_URL}/user/${username}/like`, {
         params: {
           idUserConnected: MyStore.state.auth.user.id
         }
@@ -94,7 +94,7 @@ class Poste {
     }
   }
 
-  static async unlikePost(idLike:number) {
+  static async unlikePost(idLike: number) {
     try {
       const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}deleteLike/${idLike}`)
       return data
@@ -102,6 +102,23 @@ class Poste {
       console.log(error)
     }
   }
+
+  static async searchPost(search: string) {
+    try {
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}search`, {
+        txt: search
+      },
+      {
+        params: {
+          idUserConnected: MyStore.state.auth.user.id
+        }
+      })
+      return data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 }
 
 export default Poste;

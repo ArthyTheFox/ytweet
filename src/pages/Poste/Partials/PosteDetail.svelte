@@ -48,33 +48,6 @@
 </script>
 
 <div class="w-full md:w-6/12 relative h-screen md:border-x md:border-main group">
-    <!-- <div
-        class="absolute bottom-4 left-1/2 -translate-x-6 bg-sky-500/50 shadow-lg w-12 h-12 hover:bg-sky-500 rounded-full z-50 cursor-pointer hidden group-hover:flex justify-center items-center"
-        on:keypress={() => {
-            dispatch("addComment");
-        }}
-        on:click={() => {
-            dispatch("addComment");
-        }}
-    >
-        <ion-icon
-            class="text-[1.25rem] text-white"
-            name="chatbox-ellipses-outline"
-        />
-    </div>
-    <div
-        class="absolute bottom-2 left-1/2 -translate-x-20 bg-green-500/50 shadow-lg w-12 h-12 hover:bg-green rounded-full z-50 cursor-pointer hidden group-hover:flex justify-center items-center"
-    >
-        <ion-icon
-            class="text-[1.25rem] text-white"
-            name="return-down-forward-outline"
-        />
-    </div>
-    <div
-        class="absolute bottom-2 left-1/2 translate-x-8 bg-red-500/50 shadow-lg w-12 h-12 hover:bg-red-500 rounded-full z-50 cursor-pointer hidden group-hover:flex justify-center items-center"
-    >
-        <ion-icon class="text-[1.25rem] text-white" name="heart" />
-    </div> -->
     <div
         class="h-[10%] relative flex px-4 items-center border-b border-main uppercase text-white text-[1.75rem] font-bold shadow-nav"
     >
@@ -116,7 +89,7 @@
                     </div>
                 </div>
                 <div class="ml-1 flex justify-center items-center w-1/12 h-16">
-                    <MenuPoste username={poste?.username}/>
+                    <MenuPoste username={poste?.username} idUserFollow={null}/>
                 </div>
             </div>
             <div class="flex flex-col py-4 px-4">
@@ -154,7 +127,7 @@
                             <span class="ml-2 mb-[3px] text-[0.8rem]" transition:slide>{poste?.nbreComment}</span>
                         </div>
                     </div>
-                    <div
+                    <!-- <div
                         class="w-1/3 flex justify-center items-center py-1 text-gray-200"
                     >
                         <div
@@ -166,7 +139,7 @@
                             />
                             <span class="ml-2 mb-[3px] text-[0.8rem]">0</span>
                         </div>
-                    </div>
+                    </div> -->
                     <div
                         class="w-1/3 flex justify-center items-center py-1 text-gray-200"
                     >

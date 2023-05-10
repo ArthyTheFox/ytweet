@@ -13,9 +13,19 @@
   });
 
   let visibleLogin = true;
+  let visibleMessage = false;
 
   function handleClick() {
     visibleLogin = !visibleLogin;
+  }
+
+  function RegisterHandle() {
+    handleClick();
+    visibleMessage = true
+
+    setTimeout(() => {
+      visibleMessage = false
+    }, 3000)
   }
 </script>
 
@@ -28,11 +38,18 @@
   id="div_app"
   class="relative h-screen flex flex-row bg-main-fonce text-white"
 >
+  {#if visibleMessage}
+    <div
+      class="absolute right-4 top-4 w-fit bg-green-500 rounded-xl py-2 px-6 whitespace-nowrap"
+    >
+      Votre compte à bien été créé
+    </div>
+  {/if}
   <div class="relative h-full w-full lg:w-1/2 z-[1]">
     {#if visibleLogin}
       <FormLogin {handleClick} />
     {:else}
-      <FormRegister {handleClick} />
+      <FormRegister {handleClick} on:RegisterGood={RegisterHandle} />
     {/if}
   </div>
   <div class="h-full w-1/2 hidden lg:flex justify-center items-center z-[1]">

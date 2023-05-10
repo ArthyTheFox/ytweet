@@ -1,19 +1,46 @@
 <script lang="ts">
   import { link } from "svelte-spa-router";
   import { clickOutside } from "../../script/clickOutside";
+  import { onMount } from "svelte";
+  import FollowService from "../services/follow.service";
 
-export let username:string;
-let checkbox = false;
+  export let username: string;
+  let checkbox = false;
 
-const openMenu = () => {
-  checkbox = true;
-};
+  const openMenu = () => {
+    checkbox = true;
+  };
 
-function closeMenu() {
-  checkbox = false;
-}
+  function closeMenu() {
+    checkbox = false;
+  }
+
+  export let idUserFollow: number;
+
+  let follow: boolean = false;
+
+  onMount(async () => {
+    if (idUserFollow) {
+      follow = await FollowService.getFollowByUser(idUserFollow);
+    }
+  });
+
+  const followHdandle = async () => {
+    if (idUserFollow) {
+      if (follow) {
+        const data = await FollowService.unfollow(idUserFollow);
+        if(data) {
+          follow = false
+        }
+      } else {
+        const data = await FollowService.follow(idUserFollow);
+        if(data) {
+          follow = true
+        }
+      }
+    }
+  };
 </script>
-
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
@@ -35,5 +62,13 @@ function closeMenu() {
     >
       Voir le profil
     </a>
+    <button class="p-2 w-full block text-start hover:bg-extra cursor-pointer text-xs border-t border-main-fonce/50"
+    on:click={followHdandle}>
+      {#if follow}
+        UnFollow
+      {:else}
+        Follow
+      {/if}
+    </button>
   </div>
 </div>
