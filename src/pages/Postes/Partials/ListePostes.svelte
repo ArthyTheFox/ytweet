@@ -155,7 +155,7 @@
             <div
               class="flex flew-row gap-6 justify-center items-center w-1/12 md:w-1/12 h-16"
             >
-              <Menu username={poste.username} idUserFollow={poste.idUser} />
+              <Menu username={poste.username} idUserFollow={poste.idUser} idUser={poste.userId} />
             </div>
           </div>
           <div class="ml-8 md:ml-16 flex flex-col">

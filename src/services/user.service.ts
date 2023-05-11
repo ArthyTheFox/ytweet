@@ -5,10 +5,19 @@ axios.defaults.xsrfCookieName = "csrftoken"
 
 const API_URL = `${import.meta.env.VITE_API_URL}user`;
 
-class User {
+class UserService {
   static async getUser(username: any) {
     try {
       const { data } = await axios.get(`${API_URL}/${username}`)
+      return data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  static async getUserById(id: any) {
+    try {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}getUser/${id}`)
       return data
     } catch (error) {
       console.log(error)
@@ -27,4 +36,4 @@ class User {
   }
 }
 
-export default User;
+export default UserService;

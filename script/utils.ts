@@ -1,7 +1,9 @@
 import { DateTime } from "luxon";
-import type { UserMessage } from "../src/types";
+import type { User } from "../src/types";
 
 export default class Utils {
+
+    static dateFormat = 'yyyy-MM-dd HH:mm:ss';
 
     colors: {
         'main': '#25232e';
@@ -54,22 +56,22 @@ export default class Utils {
 
     static sameDayFromStr(dateMessage1: string, dateMessage2: string): boolean {
         return (
-            DateTime.fromISO(dateMessage1).day ===
-            DateTime.fromISO(dateMessage2).day
+            DateTime.fromFormat(dateMessage1, this.dateFormat).day ===
+            DateTime.fromFormat(dateMessage2, this.dateFormat).day
         );
     }
 
     static sameMonthFromStr(dateMessage1: string, dateMessage2: string): boolean {
         return (
-            DateTime.fromISO(dateMessage1).month ===
-            DateTime.fromISO(dateMessage2).month
+            DateTime.fromFormat(dateMessage1, this.dateFormat).month ===
+            DateTime.fromFormat(dateMessage2, this.dateFormat).month
         );
     }
 
     static sameYearFromStr(dateMessage1: string, dateMessage2: string): boolean {
         return (
-            DateTime.fromISO(dateMessage1).year ===
-            DateTime.fromISO(dateMessage2).year
+            DateTime.fromFormat(dateMessage1, this.dateFormat).year ===
+            DateTime.fromFormat(dateMessage2, this.dateFormat).year
         );
     }
 
@@ -86,11 +88,13 @@ export default class Utils {
         return colour;
     }
 
-    static formatUser(user: UserMessage) {
+    static formatUser(user: User) {
+        if (!user) return '';
         return user.firstname + " " + user.lastname;
     }
 
-    static imageUser(user: UserMessage) {
+    static imageUser(user: User) {
+        if (!user) return '';
         return "https://ui-avatars.com/api/?name=" + Utils.formatUser(user) + "&color=" + Utils.stringToColour(Utils.formatUser(user)) + "&background=121212"
     }
 }

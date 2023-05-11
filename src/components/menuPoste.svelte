@@ -1,11 +1,16 @@
 <script lang="ts">
-  import { link } from "svelte-spa-router";
+  import { link, push } from "svelte-spa-router";
   import { clickOutside } from "../../script/clickOutside";
   import { onMount } from "svelte";
   import FollowService from "../services/follow.service";
+  import Message from "../services/message.service";
+  import MyStore from "../store";
 
   export let username: string;
   let checkbox = false;
+
+  export let idUser: number;
+  let messagerService = Message;
 
   const openMenu = () => {
     checkbox = true;
@@ -40,6 +45,16 @@
       }
     }
   };
+
+  const createConv = () => {
+    messagerService
+      .createConversation(MyStore.state.auth.user.id, idUser)
+      .then((r) => {
+        console.log(r);
+        push(`/message/${r.id_conversation}`);
+      })
+  };
+
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -69,6 +84,11 @@
       {:else}
         Follow
       {/if}
+    <button
+      on:click={createConv}
+      class="p-2 w-full block hover:bg-extra cursor-pointer text-xs text-left"
+    >
+      Envoyer un message
     </button>
   </div>
 </div>
