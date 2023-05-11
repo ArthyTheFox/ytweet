@@ -7,10 +7,17 @@
   import MyStore from "../store";
 
   export let username: string;
-  let checkbox = false;
-
   export let idUser: number;
+  export let idUserFollow: number;
+  let checkbox = false;
   let messagerService = Message;
+  let follow: boolean = false;
+
+  onMount(async () => {
+    if (idUserFollow) {
+      follow = await FollowService.getFollowByUser(idUserFollow);
+    }
+  });
 
   const openMenu = () => {
     checkbox = true;
@@ -20,27 +27,17 @@
     checkbox = false;
   }
 
-  export let idUserFollow: number;
-
-  let follow: boolean = false;
-
-  onMount(async () => {
-    if (idUserFollow) {
-      follow = await FollowService.getFollowByUser(idUserFollow);
-    }
-  });
-
   const followHdandle = async () => {
     if (idUserFollow) {
       if (follow) {
         const data = await FollowService.unfollow(idUserFollow);
-        if(data) {
-          follow = false
+        if (data) {
+          follow = false;
         }
       } else {
         const data = await FollowService.follow(idUserFollow);
-        if(data) {
-          follow = true
+        if (data) {
+          follow = true;
         }
       }
     }
@@ -52,9 +49,8 @@
       .then((r) => {
         console.log(r);
         push(`/message/${r.id_conversation}`);
-      })
+      });
   };
-
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -77,13 +73,16 @@
     >
       Voir le profil
     </a>
-    <button class="p-2 w-full block text-start hover:bg-extra cursor-pointer text-xs border-t border-main-fonce/50"
-    on:click={followHdandle}>
+    <button
+      class="p-2 w-full block text-start hover:bg-extra cursor-pointer text-xs border-t border-main-fonce/50"
+      on:click={followHdandle}
+    >
       {#if follow}
         UnFollow
       {:else}
         Follow
       {/if}
+    </button>
     <button
       on:click={createConv}
       class="p-2 w-full block hover:bg-extra cursor-pointer text-xs text-left"

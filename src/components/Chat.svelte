@@ -11,6 +11,7 @@
   import MessageService from "../services/message.service";
   import { onMount } from "svelte";
   import MyStore from "../store";
+  import { socket } from "../services/socketio.service";
 
   export let idConv: number;
 
@@ -31,6 +32,7 @@
 
   onMount(() => {
     if (!load) getMessage();
+    console.log(new Date().toISOString().substring(0,10) + ' ' + new Date().toLocaleTimeString())
   });
 
   $: if (idConv) {
@@ -158,7 +160,9 @@
           DateTime.fromFormat(message.publishDate, Utils.dateFormat)
         );
       } else {
-        date = Utils.dateMessageFormat(DateTime.fromFormat(message.publishDate, Utils.dateFormat));
+        date = Utils.dateMessageFormat(
+          DateTime.fromFormat(message.publishDate, Utils.dateFormat)
+        );
       }
     } else if (index < messages.length - 1) {
       if (
@@ -180,7 +184,9 @@
           messages[index + 1].publishDate
         )
       ) {
-        date = Utils.dateMessageFormat(DateTime.fromFormat(message.publishDate, Utils.dateFormat));
+        date = Utils.dateMessageFormat(
+          DateTime.fromFormat(message.publishDate, Utils.dateFormat)
+        );
       }
     }
     if (date === "") return "";
@@ -278,13 +284,29 @@
         pathMediaMessage: null,
       };
       console.log(newMessage);
-      messageService.sendMessage(newMessage).then(() => {
-        getMessage();
+      messageService.sendMessage(newMessage).then((data) => {
+        socket.emit("addMessage", { idConversation: idConv, data: data.message }, (error: any) => {
+          if (error) {
+            console.log(error);
+          }
+        });
+        // getMessage();
       });
       //   messages = [newMessage, ...messages];
       textValue = ``;
     }
   }
+
+  socket.on("addMessageFront", (data: any) => {
+    if(data.idConversation === idConv){
+      let message = data.data;
+      message.id_User = message.id_user;
+      message.params = {};
+      message.publishDate = new Date().toISOString().substring(0,10) + ' ' + new Date().toLocaleTimeString()
+      console.log(message)
+      messages = [data.data, ...messages]
+    }
+  });
 </script>
 
 <div class="relative flex h-full w-9/12 flex-col border-l border-main">
@@ -420,7 +442,12 @@
                     }}
                   >
                     <p>
-                      {Utils.timeFormat(DateTime.fromFormat(message.publishDate, Utils.dateFormat))}
+                      {Utils.timeFormat(
+                        DateTime.fromFormat(
+                          message.publishDate,
+                          Utils.dateFormat
+                        )
+                      )}
                     </p>
                   </div>
                 {/if}

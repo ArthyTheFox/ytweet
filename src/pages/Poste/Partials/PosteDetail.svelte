@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import { link, push } from "svelte-spa-router";
+  import { link } from "svelte-spa-router";
   import { onMount } from "svelte";
   import postesService from "../../../services/postes.service";
   import DatePost from "../Components/DatePost.svelte";
@@ -94,7 +93,7 @@
           </div>
         </div>
         <div class="ml-1 flex justify-center items-center w-1/12 h-16">
-          <MenuPoste username={poste?.username} idUserFollow={null} />
+          <MenuPoste username={poste?.username} idUserFollow={null} idUser={poste?.idUser}/>
         </div>
       </div>
       <div class="flex flex-col py-4 px-4">
