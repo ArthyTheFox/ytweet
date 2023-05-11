@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { link, push } from "svelte-spa-router";
+  import { link, push, replace } from "svelte-spa-router";
   import { onMount } from "svelte";
   import postesService from "../../../services/postes.service";
   import userService from "../../../services/user.service";
@@ -7,15 +7,20 @@
   import Like from "../../../components/like.svelte";
   import MyStore from "../../../store";
   import Load from "../../../components/load.svelte";
+  import FollowService from "../../../services/follow.service";
+  import Follow from "../../../components/Follow.svelte";
+  import Faculties from "../../../components/Faculties.svelte";
 
   let load: boolean = false;
   let postes: any = [];
+  let follows: any = [];
+  let posteFollow = "poste";
   let user: any;
   let description: any;
   let descriptionInput: any;
   export let username: any;
   let myPoste: boolean = false;
-  let myLike: boolean = false;
+  let myLike: string = "poste";
 
   let dialogUpdateProfil = false;
   const dialogUpdateProfilHandle = () => {
@@ -26,6 +31,9 @@
     load = true;
     if (username) {
       user = await userService.getUser(username);
+      if (username === MyStore.state.auth.user.username) {
+        follows = await FollowService.getFollow();
+      }
       description = user.description;
       descriptionInput = user.description;
       myTweetHandle();
@@ -39,7 +47,7 @@
   const myTweetHandle = async () => {
     load = true;
     postes = [];
-    myLike = false;
+    myLike = "poste";
     myPoste = true;
     postes = await postesService.posteByUser(username);
     load = false;
@@ -47,11 +55,20 @@
 
   const myLikeHandle = async () => {
     load = true;
+    posteFollow = "poste";
     postes = [];
     myPoste = false;
-    myLike = true;
+    myLike = "like";
     postes = await postesService.postByLiked(username);
     load = false;
+  };
+
+  const myFollowHandle = async () => {
+    posteFollow = "follow";
+  };
+
+  const redirectionUser = (username: string) => {
+    replace(`/${username}`);
   };
 
   export const addPost = (data: any) => {
@@ -125,7 +142,7 @@
           <img
             class="w-12 h-12 rounded-full border-main"
             alt="user profile"
-            src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
+            src={`https://ui-avatars.com/api/?name=${(user?.lastname).substring(0,1)}${(user?.firstname).substring(0,1)}&color=23b2a4&background=191820`}
           />
         </div>
         <div class="relative ml-1 pt-2 flex flex-row w-8/12 md:w-10/12 h-16">
@@ -137,17 +154,24 @@
             <span class="text-[0.75rem] text-gray-400">@{user?.username}</span>
           </div>
         </div>
-        {#if user?.id === MyStore.state.auth.user.id}
-          <div class="flex justify-center items-center w-2/12 h-16">
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div
-              class="p-2 text-xs flex justify-center items-center rounded-lg hover:bg-extra/50 cursor-pointer"
-              on:click={dialogUpdateProfilHandle}
-            >
-              Modifier
-            </div>
-          </div>
-        {/if}
+        <div class="flex justify-center items-center w-2/12 h-16">
+          {#if user}
+            {#if user?.id !== MyStore.state.auth.user.id}
+              {#key user}
+                <Follow idUserFollow={user?.id} />
+              {/key}
+            {/if}
+            {#if user?.id === MyStore.state.auth.user.id}
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <div
+                class="p-2 text-xs flex justify-center items-center rounded-lg hover:bg-extra/50 cursor-pointer"
+                on:click={dialogUpdateProfilHandle}
+              >
+                Modifier
+              </div>
+            {/if}
+          {/if}
+        </div>
       </div>
       <div class="ml-8 md:ml-16 flex flex-col">
         <div class="text-[0.75rem] text-gray-400">
@@ -179,7 +203,8 @@
     <div class="flex flex-row border-b border-main">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
-        class="w-1/3 flex justify-center items-center p-4 hover:bg-extra/10 text-sm cursor-pointer {myPoste
+        class="w-1/3 flex justify-center items-center p-4 hover:bg-extra/10 text-sm cursor-pointer {myLike ===
+          'poste' && posteFollow === 'poste'
           ? 'border-b-4 border-extra text-white'
           : 'text-gray-400'}"
         on:click|preventDefault={myTweetHandle}
@@ -192,7 +217,8 @@
       </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
-        class="w-1/3 flex justify-center items-center p-4 text-sm hover:bg-extra/10 cursor-pointer {myLike
+        class="w-1/3 flex justify-center items-center p-4 text-sm hover:bg-extra/10 cursor-pointer {myLike ===
+          'like' && posteFollow === 'poste'
           ? 'border-b-4 border-extra text-white'
           : 'text-gray-400'}"
         on:click|preventDefault={myLikeHandle}
@@ -203,12 +229,24 @@
           Ces likes
         {/if}
       </div>
+      {#if user?.id === MyStore.state.auth.user.id}
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <div
+          class="w-1/3 flex justify-center items-center p-4 text-sm hover:bg-extra/10 cursor-pointer {posteFollow ===
+          'follow'
+            ? 'border-b-4 border-extra text-white'
+            : 'text-gray-400'}"
+          on:click|preventDefault={myFollowHandle}
+        >
+          Mes Follows
+        </div>
+      {/if}
     </div>
     {#if load}
       <div class="w-full flex justify-center items-center p-10">
         <Load />
       </div>
-    {:else}
+    {:else if posteFollow === "poste"}
       {#key postes}
         {#each postes as poste}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -223,7 +261,7 @@
                 <img
                   class="w-12 h-12 rounded-full border-main"
                   alt="user profile"
-                  src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
+                  src={`https://ui-avatars.com/api/?name=${(poste.lastname).substring(0,1)}${(poste.firstname).substring(0,1)}&color=23b2a4&background=191820`}
                 />
               </div>
               <div
@@ -262,6 +300,11 @@
                 </div>
               </div>
             {/if}
+            <div class="ml-8 md:ml-16 flex flex-col">
+              <div class="line-clamp-[10] whitespace-pre-line">
+                <Faculties faculties={poste.faculties} />
+              </div>
+            </div>
             <div class="ml-8 md:ml-16 mt-4 flex flex-col">
               <div class="mr-8 rounded-lg w-full md:w-3/5 flex">
                 <div
@@ -279,7 +322,7 @@
                     >
                   </div>
                 </div>
-                <div
+                <!-- <div
                   class="w-1/3 flex justify-center items-center py-1 text-gray-400"
                 >
                   <div
@@ -291,7 +334,7 @@
                     />
                     <span class="ml-2 mb-[3px] text-[0.8rem]">0</span>
                   </div>
-                </div>
+                </div> -->
                 <div
                   class="w-1/3 flex justify-center items-center py-1 text-gray-400"
                 >
@@ -300,6 +343,47 @@
                     like={poste.nbreLike}
                     idPost={poste.id}
                   />
+                </div>
+              </div>
+            </div>
+          </div>
+        {/each}
+      {/key}
+    {:else if posteFollow === "follow"}
+      {#key follows}
+        {#each follows as follow}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <div
+            class="w-full flex flex-col border-b border-main py-2 px-1 md:px-4 hover:bg-extra/10 cursor-pointer"
+            on:click={() => redirectionUser(follow.username)}
+          >
+            <div class="flex flex-row">
+              <div
+                class="flex justify-center items-center w-2/12 md:w-1/12 h-16"
+              >
+                <img
+                  class="w-12 h-12 rounded-full border-main"
+                  alt="user profile"
+                  src={`https://ui-avatars.com/api/?name=${(follow.lastname).substring(0,1)}${(follow.firstname).substring(0,1)}&color=23b2a4&background=191820`}
+                />
+              </div>
+              <div
+                class="relative ml-1 pt-2 flex flex-row w-10/12 md:w-11/12 h-16"
+              >
+                <div class="flex flex-col">
+                  <div class="flex flex-row">
+                    {follow.firstname}
+                    {follow.lastname}
+                    <div class="mx-2">
+                      <span class="text-[0.75rem] text-gray-400">-</span>
+                    </div>
+                    <!-- <div>
+                      <DatePost DatePost={poste.publishDate} />
+                    </div> -->
+                  </div>
+                  <span class="text-[0.75rem] text-gray-400"
+                    >@{follow.username}</span
+                  >
                 </div>
               </div>
             </div>

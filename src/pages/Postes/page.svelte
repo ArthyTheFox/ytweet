@@ -1,5 +1,4 @@
 <script lang="ts">
-  // import Router, {location, link} from 'svelte-spa-router';
   import Nav from "../Partials/Nav/page.svelte";
   import Categorie from "../Partials/Categorie/page.svelte";
   import ListePostes from "./Partials/ListePostes.svelte";

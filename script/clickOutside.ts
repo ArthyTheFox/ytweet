@@ -1,5 +1,5 @@
 /** Dispatch event on click outside of node */
-export function clickOutside(node:any) {
+export function clickOutside(node): any {
 
     const handleClick = event => {
         if (node && !node.contains(event.target) && !event.defaultPrevented) {

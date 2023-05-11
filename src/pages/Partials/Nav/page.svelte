@@ -59,11 +59,13 @@
   <div class="h-[17%] flex flex-col px-6">
     <div class="w-4/5 mb-2 px-3 flex flex-row">
       <div>
+        {#if $Islogged}
         <img
           class="w-10 h-10 rounded-full border-main"
           alt="user profile"
-          src="https://ui-avatars.com/api/?name=HA&color=23b2a4&background=191820"
+          src={`https://ui-avatars.com/api/?name=${(MyStore.state.auth.user.lastname).substring(0,1)}${(MyStore.state.auth.user.firstname).substring(0,1)}&color=23b2a4&background=191820`}
         />
+        {/if}
       </div>
       <div class="ml-4">
         {#if $Islogged}

@@ -19,14 +19,15 @@
     }
   });
 
-  const routes = {
-    "/": Postes,
-	"/auth": AuthPage,
-	"/message": Message,
-    "/:user": Profil,
-    "/:iduser/poste/:idposte": Poste,
-    "*": NotFound,
-  };
+	const routes = {
+		"/auth": AuthPage,
+		"/": Postes,
+		"/message": Message,
+		"/message/:id": Message,
+		"/:user": Profil,
+		"/:iduser/poste/:idposte": Poste,
+		"*": NotFound,
+	};
 </script>
 
 <Router {routes} />

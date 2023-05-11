@@ -1,9 +1,12 @@
 <script lang="ts">
     export let handleClick: any;
-    import { push } from "svelte-spa-router";
+    import { replace } from "svelte-spa-router";
     import MyStore from "../../../store";
     //import { Islogged } from "../../../store/store";
     import { fade } from "svelte/transition";
+    import { createEventDispatcher } from "svelte";
+
+    const dispatch = createEventDispatcher();
 
     let load: boolean = false;
 
@@ -12,8 +15,7 @@
         email: any,
         password: any,
         firstname: any,
-        birthday: any,
-        idFaculty: any = "";
+        birthday: any = "";
 
     $: submit = async () => {
         load = true;
@@ -24,11 +26,10 @@
             email,
             birthday,
             password,
-            idFaculty,
         }).then(
             async () => {
                 load = false;
-                await push("/auth");
+                dispatch('RegisterGood')
             },
             (error) => {}
         );
@@ -169,7 +170,7 @@
                         />
                     </div>
                 </div>
-                <div class="relative w-full mt-6">
+                <!-- <div class="relative w-full mt-6">
                     <div class="w-full group">
                         <select
                             class="bg-main w-full text-sm text-white rounded-xl flex flex-row pt-3 pb-3 pl-3 pr-4 drop-shadow-sm hover:outline-none hover:ring-extra/75 focus:outline-none hover:ring focus:ring focus:ring-extra focus:border-none"
@@ -180,11 +181,11 @@
                             <option value="2">filiere 2</option>
                         </select>
                     </div>
-                </div>
+                </div> -->
                 <div class="w-full flex flex-wrap mt-10">
                     <div class="w-[47%]">
                         <button
-                            class="w-full flex justify-center items-center text-sm text-white rounded-xl flex flex-row py-3 drop-shadow-sm bg-extra/75 hover:bg-extra hover:ring hover:ring-extra/75 text-white"
+                            class="w-full flex justify-center items-center text-sm text-white rounded-xl flex-row py-3 drop-shadow-sm bg-extra/75 hover:bg-extra hover:ring hover:ring-extra/75"
                             type="submit"
                         >
                             S'inscrire
@@ -193,7 +194,7 @@
                     <div class="w-[6%]" />
                     <div class="w-[47%]">
                         <button
-                            class="w-full flex justify-center items-center text-sm text-white rounded-xl flex flex-row py-3 drop-shadow-sm bg-main text-white decoration-none hover:outline-none hover:ring hover:ring-extra/75"
+                            class="w-full flex justify-center items-center text-sm text-white rounded-xl flex-row py-3 drop-shadow-sm bg-main decoration-none hover:outline-none hover:ring hover:ring-extra/75"
                             type="button"
                             on:click|once={handleClick}
                         >
