@@ -21,6 +21,7 @@
   let textValue = ``;
   let selectedMessage: number | null = null;
   let visibleMessageMenu: boolean = false;
+  let indexMessage: number = null;
   let menuPosition: Position = {
     x: 0,
     y: 0,
@@ -32,7 +33,6 @@
 
   onMount(() => {
     if (!load) getMessage();
-    console.log(new Date().toISOString().substring(0,10) + ' ' + new Date().toLocaleTimeString())
   });
 
   $: if (idConv) {
@@ -241,6 +241,7 @@
       case 2: //Right button clicked
         console.log("Right button clicked");
         selectedMessage = messages[i].id;
+        indexMessage = i;
         menuPosition.x = e.clientX;
         menuPosition.y = e.clientY;
         DisplayMessageMenu(true);
@@ -285,11 +286,15 @@
       };
       console.log(newMessage);
       messageService.sendMessage(newMessage).then((data) => {
-        socket.emit("addMessage", { idConversation: idConv, data: data.message }, (error: any) => {
-          if (error) {
-            console.log(error);
+        socket.emit(
+          "addMessage",
+          { idConversation: idConv, data: data.message },
+          (error: any) => {
+            if (error) {
+              console.log(error);
+            }
           }
-        });
+        );
         // getMessage();
       });
       //   messages = [newMessage, ...messages];
@@ -298,13 +303,22 @@
   }
 
   socket.on("addMessageFront", (data: any) => {
-    if(data.idConversation === idConv){
+    if (data.idConversation === idConv) {
       let message = data.data;
       message.id_User = message.id_user;
       message.params = {};
-      message.publishDate = new Date().toISOString().substring(0,10) + ' ' + new Date().toLocaleTimeString()
-      console.log(message)
-      messages = [data.data, ...messages]
+      message.publishDate =
+        new Date().toISOString().substring(0, 10) +
+        " " +
+        new Date().toLocaleTimeString();
+      console.log(message);
+      messages = [data.data, ...messages];
+    }
+  });
+
+  socket.on("deleteMessageFront", (data: any) => {
+    if (data.idConversation === idConv) {
+      messages.splice(data.indexMessage, 1);
     }
   });
 </script>
@@ -340,127 +354,131 @@
       bind:this={chat}
       on:scroll={() => (y = Math.abs(chat.scrollTop))}
     >
-      {#each messages as message, i}
-        {#key i !== 0 || message.publishDate}
-          <div id={String(message.id)} class="w-full flex flex-col">
-            {@html displayDate(i, message)}
-            <div
-              class="{message.id_User === MyStore.state.auth.user.id
-                ? 'ctnMyMess'
-                : 'ctnOtherMess'} w-full flex"
-              in:fly={{
-                duration: 300,
-                y: 30,
-                easing: quadOut,
-              }}
-            >
+        {#each messages as message, i}
+          {#key i !== 0 || message.publishDate}
+            <div id={String(message.id)} class="w-full flex flex-col">
+              {@html displayDate(i, message)}
               <div
-                class:lastMessFromUser={!isUserFromNextMessageSame(messages, i)}
-                class="flex flex-col my-0.5"
+                class="{message.id_User === MyStore.state.auth.user.id
+                  ? 'ctnMyMess'
+                  : 'ctnOtherMess'} w-full flex"
+                in:fly={{
+                  duration: 300,
+                  y: 30,
+                  easing: quadOut,
+                }}
               >
-                {#if message.responseMess}
-                  <!-- svelte-ignore a11y-click-events-have-key-events -->
-                  <div
-                    class="flex cursor-pointer opacity-70 {message.id_User ===
-                    MyStore.state.auth.user.id
-                      ? 'flex-row-reverse'
-                      : 'flex-row'}"
-                    on:click={() => scrollTo(message.responseMess)}
-                  >
+                <div
+                  class:lastMessFromUser={!isUserFromNextMessageSame(
+                    messages,
+                    i
+                  )}
+                  class="flex flex-col my-0.5"
+                >
+                  {#if message.responseMess}
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
-                      class="w-[30px] mx-[5px] flex justify-center items-center"
+                      class="flex cursor-pointer opacity-70 {message.id_User ===
+                      MyStore.state.auth.user.id
+                        ? 'flex-row-reverse'
+                        : 'flex-row'}"
+                      on:click={() => scrollTo(message.responseMess)}
                     >
-                      <ion-icon name="arrow-redo-outline" />
-                    </div>
-                    <div class="flex flex-1">
-                      <p class="cursor-pointer line-clamp-1">
-                        {@html displayContentMessage(message.responseMess)}
-                      </p>
-                    </div>
-                  </div>
-                {/if}
-                <div class="flex">
-                  {#if message.id_User !== MyStore.state.auth.user.id}
-                    {#if isAloneMessage(messages, i) || isFirstMessage(messages, i)}
                       <div
-                        class="userPP"
-                        on:click={() => clickProfil(i)}
-                        on:keydown={() => clickProfil(i)}
-                        on:mousemove={(e) =>
-                          (message.params.positionPopup = mouseMoveValue(e))}
-                        on:mouseleave={() =>
-                          (message.params.profilClicked = false)}
+                        class="w-[30px] mx-[5px] flex justify-center items-center"
                       >
-                        <img
-                          src={message.params?.copy
-                            ? "images/clipboard.png"
-                            : Utils.imageUser(message.user)}
-                          alt="user profil pic"
-                          class="border select-none"
-                          style="border-color: #{Utils.stringToColour(
-                            Utils.formatUser(message.user)
-                          )}"
-                        />
-                        {#if message.params?.profilClicked}
-                          <ModaleUserProfil
-                            user={message.user}
-                            position={message.params.positionPopup}
-                            copy={message.params.copy}
-                            chatY={chat.getBoundingClientRect().top}
-                          />
-                        {/if}
+                        <ion-icon name="arrow-redo-outline" />
                       </div>
-                    {:else}
-                      <div class="userPP empty" />
-                    {/if}
+                      <div class="flex flex-1">
+                        <p class="cursor-pointer line-clamp-1">
+                          {@html displayContentMessage(message.responseMess)}
+                        </p>
+                      </div>
+                    </div>
                   {/if}
-                  <!-- svelte-ignore a11y-click-events-have-key-events -->
-                  <p
-                    class:aloneMess={isAloneMessage(messages, i)}
-                    class:firstMess={isFirstMessage(messages, i)}
-                    class:middleMess={isMiddleMessage(messages, i)}
-                    class:lastMess={isLastMessage(messages, i)}
-                    class="{message.id_User === MyStore.state.auth.user.id
-                      ? 'messMeBG messMe'
-                      : 'messOtherBG messOther'}
+                  <div class="flex">
+                    {#if message.id_User !== MyStore.state.auth.user.id}
+                      {#if isAloneMessage(messages, i) || isFirstMessage(messages, i)}
+                        <div
+                          class="userPP"
+                          on:click={() => clickProfil(i)}
+                          on:keydown={() => clickProfil(i)}
+                          on:mousemove={(e) =>
+                            (message.params.positionPopup = mouseMoveValue(e))}
+                          on:mouseleave={() =>
+                            (message.params.profilClicked = false)}
+                        >
+                          <img
+                            src={message.params?.copy
+                              ? "images/clipboard.png"
+                              : Utils.imageUser(message.user)}
+                            alt="user profil pic"
+                            class="border select-none"
+                            style="border-color: #{Utils.stringToColour(
+                              Utils.formatUser(message.user)
+                            )}"
+                          />
+                          {#if message.params?.profilClicked}
+                            <ModaleUserProfil
+                              user={message.user}
+                              position={message.params.positionPopup}
+                              copy={message.params.copy}
+                              chatY={chat.getBoundingClientRect().top}
+                            />
+                          {/if}
+                        </div>
+                      {:else}
+                        <div class="userPP empty" />
+                      {/if}
+                    {/if}
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <p
+                      class:aloneMess={isAloneMessage(messages, i)}
+                      class:firstMess={isFirstMessage(messages, i)}
+                      class:middleMess={isMiddleMessage(messages, i)}
+                      class:lastMess={isLastMessage(messages, i)}
+                      class="{message.id_User === MyStore.state.auth.user.id
+                        ? 'messMeBG messMe'
+                        : 'messOtherBG messOther'}
                                 flex whitespace-pre-line shrink w-fit py-2 px-3 text-base"
-                    on:click={(e) => clickMessage(e, i)}
-                    on:contextmenu={(e) => clickMessage(e, i)}
-                    on:blur={(e) => DisplayMessageMenu(false)}
-                  >
-                    {message.content}
-                  </p>
-                </div>
-                {#if message.params?.messageClicked}
-                  <div
-                    class="{message.id_User === MyStore.state.auth.user.id
-                      ? 'self-start'
-                      : 'self-end'} px-[10%]"
-                    transition:slide={{
-                      duration: 250,
-                      easing: quadOut,
-                    }}
-                  >
-                    <p>
-                      {Utils.timeFormat(
-                        DateTime.fromFormat(
-                          message.publishDate,
-                          Utils.dateFormat
-                        )
-                      )}
+                      on:click={(e) => clickMessage(e, i)}
+                      on:contextmenu={(e) => clickMessage(e, i)}
+                      on:blur={(e) => DisplayMessageMenu(false)}
+                    >
+                      {message.content}
                     </p>
                   </div>
-                {/if}
+                  {#if message.params?.messageClicked}
+                    <div
+                      class="{message.id_User === MyStore.state.auth.user.id
+                        ? 'self-start'
+                        : 'self-end'} px-[10%]"
+                      transition:slide={{
+                        duration: 250,
+                        easing: quadOut,
+                      }}
+                    >
+                      <p>
+                        {Utils.timeFormat(
+                          DateTime.fromFormat(
+                            message.publishDate,
+                            Utils.dateFormat
+                          )
+                        )}
+                      </p>
+                    </div>
+                  {/if}
+                </div>
               </div>
             </div>
-          </div>
-        {/key}
-      {/each}
+          {/key}
+        {/each}
       {#if visibleMessageMenu}
         <ModaleMessageMenu
           on:clickOutside={handleClickOutside}
           position={menuPosition}
           selectedMessage={messages.find((m) => m.id === selectedMessage)}
+          {indexMessage}
         />
       {/if}
     </div>

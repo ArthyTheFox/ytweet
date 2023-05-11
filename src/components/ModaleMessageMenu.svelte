@@ -9,9 +9,11 @@
   import MessageService from "../services/message.service";
   import type { User } from "../types";
   import { link } from "svelte-spa-router";
+  import { socket } from "../services/socketio.service";
 
   export let selectedMessage: Message;
   export let position: Position;
+  export let indexMessage: Number;
 
   let messageservice = MessageService;
   let userservice = UserService;
@@ -46,16 +48,26 @@
 
   const getUser = () => {
     userservice.getUserById(selectedMessage?.id_User).then((u) => {
-        user = u[0];
+      user = u[0];
     });
   };
 
   const deleteMessage = () => {
-    messageservice.deleteMessage(selectedMessage?.id_conversation, selectedMessage?.id).then((r) => {
-        console.log(r)
+    messageservice
+      .deleteMessage(selectedMessage?.id_conversation, selectedMessage?.id)
+      .then((r) => {
+        socket.emit(
+          "deleteMessage",
+          { idConversation: selectedMessage?.id_conversation, indexMessage: indexMessage },
+          (error: any) => {
+            if (error) {
+              console.log(error);
+            }
+          }
+        );
         dispatch("clickOutside");
-    })
-  }
+      });
+  };
 </script>
 
 <div
